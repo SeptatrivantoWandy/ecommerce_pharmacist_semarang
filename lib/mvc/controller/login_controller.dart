@@ -1,3 +1,4 @@
+import 'package:ecommerce_pharmacist_semarang/mvc/view/menu_screen/menu_view.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/register_screen/register_view.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class LoginController {
 
   bool loginButtonPressed() {
     if (passwordUIController.text.isEmpty) {
-      passwordError = "password tidak boleh kosong!";
+      passwordError = "Password tidak boleh kosong!";
     } else {
       passwordError = "";
     }
@@ -38,11 +39,11 @@ class LoginController {
   }
 
   loginAccount(BuildContext context) {
-    // Navigator.of(context).pushReplacement(
-    //   MaterialPageRoute(
-    //     builder: (ctx) => const Tabs(),
-    //   ),
-    // );
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (ctx) => const MenuView(),
+      ),
+    );
   }
 
   void registerButtonPressed(BuildContext context) {
