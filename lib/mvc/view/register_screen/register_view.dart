@@ -83,6 +83,7 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.name,
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.usernameUIController,
             textAlignVertical: TextAlignVertical.center,
@@ -138,6 +139,7 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.visiblePassword,
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.passwordUIController,
             obscureText: registerController.isSecure,
@@ -211,6 +213,7 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.visiblePassword,
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.confirmPasswordUIController,
             obscureText: registerController.isSecureConfirm,
@@ -340,6 +343,7 @@ class _RegisterViewState extends State<RegisterView> {
           margin: PaddingMarginManager.textField,
           child: Center(
             child: TextField(
+              keyboardType: TextInputType.streetAddress,
               style: const TextStyle(fontSize: FontSizeManager.headlineBody),
               controller: registerController.alamatUIController,
               textAlignVertical: TextAlignVertical.center,
@@ -507,6 +511,7 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.emailAddress,
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.emailUIController,
             textAlignVertical: TextAlignVertical.center,
@@ -562,6 +567,7 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.number,
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.nomorIzinApotekUIController,
             textAlignVertical: TextAlignVertical.center,
@@ -808,6 +814,7 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.number,
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.nomorIzinApotekerUIController,
             textAlignVertical: TextAlignVertical.center,
@@ -1070,6 +1077,7 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.streetAddress,
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.alamatFakturUIController,
             textAlignVertical: TextAlignVertical.center,

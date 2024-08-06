@@ -39,6 +39,9 @@ dependencies:
   dotted_border: ^2.1.0
   image_picker: ^1.1.2
   material_symbols_icons: ^4.2777.1
+  http: ^1.2.2
+  http_parser: ^4.0.2
+  mime: ^1.0.5
 
 dev_dependencies:
   flutter_test:
