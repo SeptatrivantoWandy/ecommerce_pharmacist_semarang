@@ -10,7 +10,7 @@ class FailureDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: ColorManager.backgroundPage,
       title: const Text(
-        'Failure',
+        'Gagal',
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: FontSizeManager.title3),
       ),

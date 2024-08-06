@@ -40,7 +40,7 @@ class CancelBackDialog extends StatelessWidget {
             Navigator.pop(context);
           },
           child: const Text(
-            'No',
+            'Tidak',
             style: TextStyle(
               color: ColorManager.negative,
             ),
@@ -52,7 +52,7 @@ class CancelBackDialog extends StatelessWidget {
             Navigator.pop(context, false);
           },
           child: Text(
-            'Yes',
+            'Ya',
             style: TextStyle(
               color: Theme.of(context).colorScheme.primary,
             ),

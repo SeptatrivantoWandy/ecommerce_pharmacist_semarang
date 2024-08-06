@@ -37,7 +37,7 @@ class ConfirmationDialog extends StatelessWidget {
             Navigator.of(context).pop(false);
           },
           child: const Text(
-            'No',
+            'Tidak',
             style: TextStyle(
               color: ColorManager.negative,
             ),
@@ -48,7 +48,7 @@ class ConfirmationDialog extends StatelessWidget {
             Navigator.of(context).pop(true);
           },
           child: const Text(
-            'Yes',
+            'Ya',
           ),
         )
       ],

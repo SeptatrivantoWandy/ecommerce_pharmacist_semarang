@@ -34,7 +34,7 @@ class _LoginViewState extends State<LoginView> {
               'PBF Apps',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: FontSizeManager.largeTitle,
+                fontSize: FontSizeManager.title1,
                 fontWeight: FontWeight.bold,
                 color: ColorManager.blackText,
               ),
@@ -194,7 +194,7 @@ class _LoginViewState extends State<LoginView> {
             final bool isSatisfied = loginController.loginButtonPressed();
             if (isSatisfied) {
               loginDialog.loadingAlertDialog(context);
-              loginDialog.loading(context, loginController);
+              loginController.loginAccount(context);
             }
           });
         },
@@ -250,7 +250,7 @@ class _LoginViewState extends State<LoginView> {
             children: [
               const SizedBox(height: SizedBoxManager.largeSpace),
               welcomeDisplaysUIView(),
-              const SizedBox(height: 64),
+              const SizedBox(height: 124),
               usernameUITextField(),
               const SizedBox(height: 16),
               passwordUITextField()
