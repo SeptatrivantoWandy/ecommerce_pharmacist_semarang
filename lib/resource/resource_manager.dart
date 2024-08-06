@@ -21,6 +21,7 @@ class SizeManager {
 
 class BorderRadiusManager {
   static BorderRadius textfieldRadius = BorderRadius.circular(6.0);
+  static Radius dottedTextFieldRadius = const Radius.circular(6.0);
 }
 
 class BottomAppBarManager {
@@ -30,6 +31,7 @@ class BottomAppBarManager {
 class PaddingMarginManager {
   static const EdgeInsets allSuperView = EdgeInsets.all(16);
   static const EdgeInsets horizontallySuperView = EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsets listSuperView = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
   static const EdgeInsets labelTextField = EdgeInsets.fromLTRB(24, 0, 16, 0);
   static const EdgeInsets textField = EdgeInsets.fromLTRB(16, 0, 16, 0);
   static const EdgeInsets onlyRight6 = EdgeInsets.fromLTRB(0, 0, 6, 0);

@@ -10,7 +10,7 @@ class SuccessDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: ColorManager.backgroundPage,
       title: const Text(
-        'Success',
+        'Sukses',
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: FontSizeManager.title3),
       ),

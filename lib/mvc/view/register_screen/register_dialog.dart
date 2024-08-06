@@ -9,35 +9,45 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/succes
 import 'package:flutter/material.dart';
 
 class RegisterDialog {
-
   Future<bool> cancelAlertDialog(BuildContext context) async {
     return (await showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) => const CancelBackDialog(
                   cancelDialogText:
-                      'Are you sure to cancel register your account?',
-                  cancelDialogTitle: 'Cancel Register Account',
+                      'Apakah kamu yakin untuk membatalkan registrasi akun?',
+                  cancelDialogTitle: 'Batal Registrasi Akun',
                 ))) ??
         false;
   }
 
-  void registerAlertDialog(BuildContext context, RegisterController registerController) async {
+  void registerAlertDialog(
+      BuildContext context, RegisterController registerController) async {
     bool? action = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return const ConfirmationDialog(
-            confirmDialogTitle: 'Register New Account',
+            confirmDialogTitle: 'Registrasi Akun Baru',
             confirmDialogText:
-                'Are you sure your data is correct to register?');
+                'Apakah kamu yakin data yang dikumpulkan sudah benar untuk dilakukan registrasi?');
       },
     );
     if (action == true) {
       if (context.mounted) {
-        registerController.createAccount();
         loadingAlertDialog(context);
-        loading(context);
+        bool success = await registerController.createAccount();
+        if (success) {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            successAlertDialog(context);
+          }
+        } else {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            failureAlertDialog(context);
+          }
+        }
       }
     }
   }
@@ -58,7 +68,8 @@ class RegisterDialog {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return const SuccessDialog(
-          successDialogText: 'Account registered successfully',
+          successDialogText:
+              'Akun berhasil di registrasi, tunggu persetujuan lebih lanjut agar dapat melakukan login akun',
         );
       },
     );
@@ -70,19 +81,21 @@ class RegisterDialog {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return const FailureDialog(
-          failureDialogText: 'Account unsuccessfully registered, try again later',
+          failureDialogText: 'Akun gagal di registrasi, coba lagi nanti',
         );
       },
     );
   }
 
-  void loading(BuildContext context) {
-    Timer(
-      const Duration(seconds: 2),
-      () {
-        Navigator.of(context).pop();
-        successAlertDialog(context);
-        // failureAlertDialog(context);
+  void isNotSatisfied(BuildContext context) {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const FailureDialog(
+          failureDialogText:
+              'Data gagal di registrasi, periksa kembali data yang belum memenuhi syarat',
+        );
       },
     );
   }
