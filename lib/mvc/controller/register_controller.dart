@@ -1,9 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgnbaru/mlgnbaru_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgnbaru/mlgnbaru_response.dart';
+import 'package:ecommerce_pharmacist_semarang/service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class RegisterController {
   IconData securePasswordIcon = Icons.visibility_off_outlined;
@@ -71,41 +76,66 @@ class RegisterController {
   }
 
   void izinApotekBerlakuSampaiDatePickerPressed(BuildContext context) async {
-    final formatter = DateFormat.yMMMMd();
-    // final formatterAdult = DateFormat.yMd();
+    await initializeDateFormatting('id_ID', null);
+
     final now = DateTime.now();
     final initialDate = izinApotekBerlakuSelectedDate ?? DateTime.now();
     final firstDate = DateTime(now.month, now.day);
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: DateTime(now.year + 10),
-    );
-    izinApotekBerlakuSelectedDate =
-        pickedDate ?? izinApotekBerlakuSelectedDate ?? now;
-    // userAge = formatterAdult.format(selectedDate!);
-    izinApotekBerlakuSampaiUIController.text =
-        formatter.format(izinApotekBerlakuSelectedDate!);
+
+    if (context.mounted) {
+      final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: firstDate,
+        lastDate: DateTime(now.year + 10),
+      );
+      izinApotekBerlakuSelectedDate =
+          pickedDate ?? izinApotekBerlakuSelectedDate ?? now;
+    }
+
+    // Define the output format
+    DateFormat dayFormat = DateFormat('d'); // Single digit day format
+    DateFormat monthYearFormat = DateFormat('MMMM yyyy', 'id_ID');
+
+    // Format the day, month, and year separately
+    String formattedDay = dayFormat.format(izinApotekBerlakuSelectedDate!);
+    String formattedMonthYear =
+        monthYearFormat.format(izinApotekBerlakuSelectedDate!);
+
+    // Combine the formatted parts
+    String formattedDate = '$formattedDay $formattedMonthYear';
+
+    izinApotekBerlakuSampaiUIController.text = formattedDate;
   }
 
   void nomorApotekerBerlakuSampaiDatePickerPressed(BuildContext context) async {
-    final formatter = DateFormat.yMMMMd();
-    // final formatterAdult = DateFormat.yMd();
+    await initializeDateFormatting('id_ID', null);
+
     final now = DateTime.now();
     final initialDate = nomorApotekerBerlakuSelectedDate ?? DateTime.now();
     final firstDate = DateTime(now.month, now.day);
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: DateTime(now.year + 10),
-    );
-    nomorApotekerBerlakuSelectedDate =
-        pickedDate ?? nomorApotekerBerlakuSelectedDate ?? now;
-    // userAge = formatterAdult.format(selectedDate!);
-    nomorApotekerBerlakuSampaiUIController.text =
-        formatter.format(nomorApotekerBerlakuSelectedDate!);
+    if (context.mounted) {
+      final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: firstDate,
+        lastDate: DateTime(now.year + 10),
+      );
+      nomorApotekerBerlakuSelectedDate =
+          pickedDate ?? nomorApotekerBerlakuSelectedDate ?? now;
+    }
+    // Define the output format
+    DateFormat dayFormat = DateFormat('d'); // Single digit day format
+    DateFormat monthYearFormat = DateFormat('MMMM yyyy', 'id_ID');
+
+    // Format the day, month, and year separately
+    String formattedDay = dayFormat.format(nomorApotekerBerlakuSelectedDate!);
+    String formattedMonthYear =
+        monthYearFormat.format(nomorApotekerBerlakuSelectedDate!);
+
+    // Combine the formatted parts
+    String formattedDate = '$formattedDay $formattedMonthYear';
+    nomorApotekerBerlakuSampaiUIController.text = formattedDate;
   }
 
   Future pickImageFromGallery(String fotoDari) async {
@@ -133,7 +163,6 @@ class RegisterController {
     } else {
       if (fotoDari == 'SIA') {
         fotoSIAImagePicker = File(returnedImage.path);
-        print('fotoSIA: ${fotoSIAImagePicker}');
       } else if (fotoDari == 'SIPA') {
         fotoSIPAImagePicker = File(returnedImage.path);
       } else {
@@ -154,19 +183,25 @@ class RegisterController {
 
     if (passwordUIController.text.isEmpty) {
       passwordError = 'Password tidak boleh kosong';
+    } else if (passwordUIController.text.toString().trim().contains(' ')) {
+      passwordError = 'Password tidak boleh ada spasi';
     } else {
-      final bool passwordValid = RegExp(
-        r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,}$",
-      ).hasMatch(
-        passwordUIController.text.toString().trim(),
-      );
-      if (passwordValid == false) {
-        passwordError =
-            'Password harus termasuk setidaknya 8 karakter, 1 huruf besar, 1 huruf kecil, and 1 angka';
-      } else {
-        passwordError = '';
-      }
+      passwordError = '';
     }
+
+    // else {
+    //   final bool passwordValid = RegExp(
+    //     r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,}$",
+    //   ).hasMatch(
+    //     passwordUIController.text.toString().trim(),
+    //   );
+    //   if (passwordValid == false) {
+    //     passwordError =
+    //         'Password harus termasuk setidaknya 8 karakter, 1 huruf besar, 1 huruf kecil, and 1 angka';
+    //   } else {
+    //     passwordError = '';
+    //   }
+    // }
 
     if (confirmPasswordUIController.text != passwordUIController.text) {
       confirmPasswordError = 'konfimasi password tidak sesuai';
@@ -320,13 +355,47 @@ class RegisterController {
   Future<bool> createAccount() async {
     bool success = false;
 
-    await Future.delayed(const Duration(seconds: 2), () {
-      print('Account created');
-      success = true; // Set this based on your actual account creation logic
-    });
+    MlgnBaruService service = MlgnBaruService();
 
-    // print('Account created');
-    // success = false;
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
+    String requestDateSIA = formatter.format(izinApotekBerlakuSelectedDate!);
+    String requestDateSIPA =
+        formatter.format(nomorApotekerBerlakuSelectedDate!);
+
+    MlgnBaruRequest request = MlgnBaruRequest(
+      username: usernameUIController.text,
+      password: confirmPasswordUIController.text,
+      pharmacyName: namaApotekUIController.text,
+      pharmacyAddress: alamatUIController.text,
+      pharmacyCity: kotaUIController.text,
+      pharmacyPhoneNumber: nomorTeleponUIController.text,
+      pharmacyEmail: emailUIController.text,
+      pharmacySIA: nomorIzinApotekUIController.text,
+      pharmacySIADate: requestDateSIA,
+      pharmacistName: namaApotekerUIController.text,
+      pharmacistSIPA: nomorIzinApotekerUIController.text,
+      pharmacistSIPADate: requestDateSIPA,
+      taxName: namaFakturUIController.text,
+      taxAddress: alamatFakturUIController.text,
+      taxCity: kotaFakturUIController.text,
+      taxNPWP: npwpFakturUIController.text,
+      pharmacySIAPhoto: fotoSIAImagePicker!,
+      pharmacySIPAPhoto: fotoSIPAImagePicker!,
+    );
+
+    request.printMlgnBaruRequest();
+
+    try {
+      MlgnBaruResponse response = await service.register(request);
+      response.printMlgnBaruResponse();
+      if (response.status) {
+        success = true;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    }
 
     return success;
   }
