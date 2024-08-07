@@ -69,7 +69,7 @@ class RegisterDialog {
       builder: (BuildContext context) {
         return const SuccessDialog(
           successDialogText:
-              'Akun berhasil di registrasi, tunggu persetujuan lebih lanjut agar dapat melakukan login akun',
+              'Akun berhasil di registrasi, tim kami akan memberikan informasi melalui Whatsapp atau email apabila anda sudah dapat melakukan login pada aplikasi',
         );
       },
     );

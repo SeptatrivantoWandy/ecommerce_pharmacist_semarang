@@ -4,6 +4,8 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/register_screen/register_
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/healthicons.dart';
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {
@@ -25,11 +27,11 @@ class _RegisterViewState extends State<RegisterView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 6),
-            child: const Icon(
-              Icons.local_pharmacy_rounded,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            child: const Iconify(
+              Healthicons.pharmacy,
+              size: 64,
               color: ColorManager.primary,
-              size: 100,
             ),
           ),
           Container(

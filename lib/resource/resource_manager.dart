@@ -30,8 +30,12 @@ class BottomAppBarManager {
 
 class PaddingMarginManager {
   static const EdgeInsets allSuperView = EdgeInsets.all(16);
-  static const EdgeInsets horizontallySuperView = EdgeInsets.symmetric(horizontal: 16);
-  static const EdgeInsets listSuperView = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  static const EdgeInsets horizontallySuperView =
+      EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsets verticallySuperView =
+      EdgeInsets.symmetric(vertical: 16);
+  static const EdgeInsets listSuperView =
+      EdgeInsets.symmetric(horizontal: 16, vertical: 8);
   static const EdgeInsets labelTextField = EdgeInsets.fromLTRB(24, 0, 16, 0);
   static const EdgeInsets textField = EdgeInsets.fromLTRB(16, 0, 16, 0);
   static const EdgeInsets onlyRight6 = EdgeInsets.fromLTRB(0, 0, 6, 0);
@@ -59,5 +63,26 @@ class ColorSchemeManager {
     brightness: Brightness.light,
     primary: ColorManager.primary,
     seedColor: ColorManager.primary,
+  );
+}
+
+Widget separatorWidget() {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 16),
+    width: double.infinity,
+    decoration: BoxDecoration(
+      border: Border.all(width: 0.5, color: ColorManager.separator),
+      borderRadius: BorderRadius.circular(10),
+    ),
+  );
+}
+
+Widget noMarginSeparatorWidget() {
+  return Container(
+    width: double.infinity,
+    decoration: BoxDecoration(
+      border: Border.all(width: 0.5, color: ColorManager.separator),
+      borderRadius: BorderRadius.circular(10),
+    ),
   );
 }

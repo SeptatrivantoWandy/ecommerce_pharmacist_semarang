@@ -1,4 +1,4 @@
-import 'package:ecommerce_pharmacist_semarang/mvc/view/login_screen/login_view.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/auth_screen/auth_view.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Inter',
         useMaterial3: true,
       ),
-      home: const LoginView(),
+      home: const AuthView(),
     );
   }
 }
