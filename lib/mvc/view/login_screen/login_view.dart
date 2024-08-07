@@ -1,6 +1,8 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/login_controller.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/login_screen/login_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/healthicons.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatefulWidget {
@@ -21,11 +23,11 @@ class _LoginViewState extends State<LoginView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 6),
-            child: const Icon(
-              Icons.local_pharmacy_rounded,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            child: const Iconify(
+              Healthicons.pharmacy,
+              size: 64,
               color: ColorManager.primary,
-              size: 100,
             ),
           ),
           Container(

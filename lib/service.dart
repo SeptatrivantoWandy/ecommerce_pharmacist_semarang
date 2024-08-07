@@ -15,7 +15,7 @@ class MlgnService {
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(request.toJson()),
-    );
+    ).timeout(const Duration(seconds: 4));
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
@@ -62,7 +62,7 @@ class MlgnBaruService {
     ));
 
     final streamedResponse = await requestBody.send();
-    final response = await http.Response.fromStream(streamedResponse);
+    final response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 4));
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
