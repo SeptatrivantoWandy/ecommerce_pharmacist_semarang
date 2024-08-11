@@ -14,6 +14,7 @@ class _SetttingViewState extends State<SetttingView> {
   final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
   String? username;
   String? userId;
+  String? userCode;
 
   String? appName;
   String? packageName;
@@ -33,6 +34,7 @@ class _SetttingViewState extends State<SetttingView> {
     setState(() {
       username = prefs.getString('username');
       userId = prefs.getString('userId');
+      userCode = prefs.getString('userCode');
     });
   }
 
@@ -79,6 +81,17 @@ class _SetttingViewState extends State<SetttingView> {
                 style: const TextStyle(fontSize: FontSizeManager.headlineBody),
               ),
               const SizedBox(height: 6),
+              const Text(
+                'User Code',
+                style: TextStyle(
+                  fontSize: FontSizeManager.subheadFootnote,
+                  color: ColorManager.subheadFootnote,
+                ),
+              ),
+              Text(
+                userCode ?? 'No user',
+                style: const TextStyle(fontSize: FontSizeManager.headlineBody),
+              ),
               const SizedBox(height: 48),
               const SizedBox(
                 width: double.infinity,
