@@ -37,7 +37,7 @@ class _RegisterViewState extends State<RegisterView> {
           Container(
             margin: PaddingMarginManager.horizontallySuperView,
             child: const Text(
-              'Register Account',
+              'Registrasi Akun',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: FontSizeManager.title1,

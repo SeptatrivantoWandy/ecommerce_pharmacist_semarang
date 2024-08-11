@@ -48,6 +48,8 @@ class SizedBoxManager {
 class ColorManager {
   static const placeholder = Color.fromRGBO(198, 198, 200, 1);
   static const primary = Color.fromRGBO(39, 85, 171, 1);
+  static const greyPrimaryBackground = Color.fromARGB(255, 210, 227, 255);
+  static const whitePrimaryBackground = Color.fromRGBO(239, 245, 251, 1);
   static const blackText = Color.fromRGBO(0, 0, 0, 1);
   static const white = Color.fromRGBO(255, 255, 255, 1);
   static const backgroundPage = Color.fromRGBO(242, 242, 247, 1);
