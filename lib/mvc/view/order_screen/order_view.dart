@@ -86,7 +86,7 @@ class _OrderViewState extends State<OrderView> {
                           borderRadius: BorderRadiusManager.textfieldRadius,
                           child: Image.asset(
                             'assets/123650.jpeg',
-                            height: 124,
+                            height: 100,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -101,7 +101,7 @@ class _OrderViewState extends State<OrderView> {
                                   BorderRadiusManager.textfieldRadius * 4,
                             ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 8),
+                                horizontal: 24, vertical: 4),
                             child: const Text(
                               '1 - 5 = 3%',
                               style: TextStyle(
@@ -117,7 +117,7 @@ class _OrderViewState extends State<OrderView> {
                                   BorderRadiusManager.textfieldRadius * 4,
                             ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 8),
+                                horizontal: 24, vertical: 4),
                             child: const Text(
                               '1 - 5 = 3%',
                               style: TextStyle(
@@ -133,7 +133,7 @@ class _OrderViewState extends State<OrderView> {
                                   BorderRadiusManager.textfieldRadius * 4,
                             ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 8),
+                                horizontal: 24, vertical: 4),
                             child: const Text(
                               '1 - 5 = 3%',
                               style: TextStyle(
@@ -189,8 +189,10 @@ class _OrderViewState extends State<OrderView> {
                             ),
                             const SizedBox(width: 8),
                             Container(
+                              width: 74,
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: ColorManager.primary,
                                 borderRadius:
@@ -198,7 +200,11 @@ class _OrderViewState extends State<OrderView> {
                               ),
                               child: const Text(
                                 'BOX',
-                                style: TextStyle(color: ColorManager.white),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: ColorManager.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             )
                           ],
@@ -244,14 +250,18 @@ class _OrderViewState extends State<OrderView> {
         title: const Text('Order Pesanan'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              orderController.historyAppBarPressed(context);
+            },
             icon: const Icon(
               Icons.history_rounded,
               color: ColorManager.primary,
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              orderController.cartAppBarPressed(context);
+            },
             icon: const Icon(
               Icons.shopping_cart_outlined,
               color: ColorManager.primary,

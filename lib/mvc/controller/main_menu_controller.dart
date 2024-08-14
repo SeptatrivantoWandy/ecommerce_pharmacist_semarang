@@ -1,6 +1,8 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/view/login_screen/login_view.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/menu_screen/main_menu_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/order_screen/order_view.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/piutang_screen/piutang_view.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/point_screen/point_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +33,22 @@ class MainMenuController {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => const OrderView(),
+      ),
+    );
+  }
+
+  void piutangFeaturePressed(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => const PiutangView(),
+      ),
+    );
+  }
+
+  void pointFeaturePressed(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => const PointView(),
       ),
     );
   }

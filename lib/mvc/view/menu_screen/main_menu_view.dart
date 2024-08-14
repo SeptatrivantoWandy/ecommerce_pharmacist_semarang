@@ -147,7 +147,7 @@ class _MenuViewState extends State<MainMenuView> {
                   borderRadius: BorderRadiusManager.textfieldRadius * 2,
                 ),
                 onTap: () {
-                  print('object2');
+                  mainMenuController.piutangFeaturePressed(context);
                 },
                 child: SizedBox(
                   width: 76,
@@ -183,7 +183,7 @@ class _MenuViewState extends State<MainMenuView> {
                   borderRadius: BorderRadiusManager.textfieldRadius * 2,
                 ),
                 onTap: () {
-                  print('object3');
+                  mainMenuController.pointFeaturePressed(context);
                 },
                 child: SizedBox(
                   width: 76,
