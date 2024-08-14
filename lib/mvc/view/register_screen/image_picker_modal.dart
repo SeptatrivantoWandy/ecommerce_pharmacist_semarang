@@ -21,7 +21,7 @@ class ImagePickerModal {
                 decoration: BoxDecoration(
                   border: Border.all(
                     width: 2,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: ColorManager.primary,
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),

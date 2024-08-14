@@ -30,8 +30,11 @@ class BottomAppBarManager {
 
 class PaddingMarginManager {
   static const EdgeInsets allSuperView = EdgeInsets.all(16);
+  static const EdgeInsets allMiniSuperView = EdgeInsets.all(8);
   static const EdgeInsets horizontallySuperView =
       EdgeInsets.symmetric(horizontal: 16);
+      static const EdgeInsets miniHorizontallySuperView =
+      EdgeInsets.symmetric(horizontal: 8);
   static const EdgeInsets verticallySuperView =
       EdgeInsets.symmetric(vertical: 16);
   static const EdgeInsets listSuperView =
@@ -56,6 +59,7 @@ class ColorManager {
   static const subheadFootnote = Color.fromRGBO(60, 60, 67, 0.6);
   static const separator = Color.fromRGBO(0, 0, 0, 0.1);
   static const negative = Color.fromRGBO(255, 59, 48, 1);
+  static const positive = Color.fromRGBO(52, 199, 89, 1);
   static const disabledTextIcon = Colors.black26;
   static const disabledBackground = Colors.black12;
 }
@@ -68,9 +72,9 @@ class ColorSchemeManager {
   );
 }
 
-Widget separatorWidget() {
+Widget separatorWidget(double horizontalPadding) {
   return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 16),
+    margin: EdgeInsets.symmetric(horizontal: horizontalPadding),
     width: double.infinity,
     decoration: BoxDecoration(
       border: Border.all(width: 0.5, color: ColorManager.separator),

@@ -155,15 +155,21 @@ class AddToCartModal {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  width: 74,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: ColorManager.primary,
                     borderRadius: BorderRadiusManager.textfieldRadius * 4,
                   ),
                   child: const Text(
                     'BOX',
-                    style: TextStyle(color: ColorManager.white),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: ColorManager.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 )
               ],
@@ -223,7 +229,7 @@ class AddToCartModal {
                   decoration: BoxDecoration(
                     border: Border.all(
                       width: 2,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: ColorManager.primary,
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),

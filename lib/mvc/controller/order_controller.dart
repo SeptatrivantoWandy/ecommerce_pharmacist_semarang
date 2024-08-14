@@ -1,3 +1,5 @@
+import 'package:ecommerce_pharmacist_semarang/mvc/view/cart_screen/cart_view.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/history_screen/history_view.dart';
 import 'package:flutter/material.dart';
 
 class OrderController {
@@ -5,7 +7,23 @@ class OrderController {
   TextEditingController searchMedicineUIController = TextEditingController();
   int quantityMedicine = 1;
 
-  fetchMedicineOrder () {
+  cartAppBarPressed(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => const CartView(),
+      ),
+    );
+  }
+
+  historyAppBarPressed(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => const HistoryView(),
+      ),
+    );
+  }
+
+  fetchMedicineOrder() {
     return print('fetching medicine');
   }
 
