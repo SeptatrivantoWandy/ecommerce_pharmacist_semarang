@@ -181,11 +181,11 @@ class _ClaimPointViewState extends State<ClaimPointView> {
                     height: 36,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadiusManager.textfieldRadius * 4,
-                      color: ColorManager.backgroundPage,
+                      color: ColorManager.primary,
                     ),
                     child: const Icon(
                       Icons.import_export_rounded,
-                      color: ColorManager.primary,
+                      color: ColorManager.white,
                       size: 30,
                     ),
                   ),

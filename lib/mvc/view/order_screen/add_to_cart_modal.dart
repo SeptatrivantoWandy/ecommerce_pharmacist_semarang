@@ -1,15 +1,16 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/order_controller.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/drug/drug_response.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
 class AddToCartModal {
-  Widget medicineNameUILabel() {
+  Widget medicineNameUILabel(DrugData drugData) {
     return Container(
       width: double.infinity,
       margin: PaddingMarginManager.horizontallySuperView,
-      child: const Text(
-        'Amlopidine 10 MG (MDK) 30S',
-        style: TextStyle(fontWeight: FontWeight.bold),
+      child: Text(
+        drugData.drugName,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -80,7 +81,7 @@ class AddToCartModal {
   }
 
   Widget qtySectionUIContainer(
-      OrderController orderController, StateSetter setState) {
+      OrderController orderController, StateSetter setState, DrugData drugData) {
     return IntrinsicHeight(
       child: Row(
         children: [
@@ -88,11 +89,29 @@ class AddToCartModal {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadiusManager.textfieldRadius,
-              child: Image.asset(
-                'assets/123650.jpeg',
-                height: 124,
-                // width: 200,
-                fit: BoxFit.cover,
+              // child: Image.asset(
+              //   'assets/123650.jpeg',
+              //   height: 124,
+              //   // width: 200,
+              //   fit: BoxFit.cover,
+              // ),
+              child: Container(
+                color: ColorManager.white,
+                child: Image.network(
+                  drugData.drugImage,
+                  height: 100,
+                  fit: BoxFit.fitHeight,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Text('Failed to load image');
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child; // Image is fully loaded
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
+                ),
               ),
             ),
           ),
@@ -118,7 +137,7 @@ class AddToCartModal {
     );
   }
 
-  Widget totalHargaUILabel() {
+  Widget totalHargaUILabel(DrugData drugData) {
     return Container(
       margin: PaddingMarginManager.horizontallySuperView,
       decoration: BoxDecoration(
@@ -146,9 +165,9 @@ class AddToCartModal {
             ),
             Row(
               children: [
-                const Text(
-                  'Rp2.000.000',
-                  style: TextStyle(
+                Text(
+                  'Rp${drugData.drugDetail.hrg1Hv}',
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: ColorManager.primary,
                   ),
@@ -163,10 +182,10 @@ class AddToCartModal {
                     color: ColorManager.primary,
                     borderRadius: BorderRadiusManager.textfieldRadius * 4,
                   ),
-                  child: const Text(
-                    'BOX',
+                  child: Text(
+                    drugData.drugDetail.drugMeasure,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: ColorManager.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -180,8 +199,8 @@ class AddToCartModal {
     );
   }
 
-  Widget addToCartUIButton(
-      BuildContext context, OrderController orderController) {
+  Widget addToCartUIButton(BuildContext context,
+      OrderController orderController, DrugData drugData) {
     return Container(
       margin: PaddingMarginManager.horizontallySuperView,
       height: 34,
@@ -208,10 +227,8 @@ class AddToCartModal {
     );
   }
 
-  void medicineListPressed(
-    BuildContext context,
-    OrderController orderController,
-  ) {
+  void medicineListPressed(BuildContext context,
+      OrderController orderController, DrugData drugData) {
     orderController.quantityMedicine = 1;
     showModalBottomSheet(
       useSafeArea: true,
@@ -271,13 +288,13 @@ class AddToCartModal {
                   width: double.infinity,
                   child: Column(
                     children: [
-                      qtySectionUIContainer(orderController, setState),
+                      qtySectionUIContainer(orderController, setState, drugData),
                       const SizedBox(height: 8),
-                      medicineNameUILabel(),
+                      medicineNameUILabel(drugData),
                       const SizedBox(height: 8),
-                      totalHargaUILabel(),
+                      totalHargaUILabel(drugData),
                       const SizedBox(height: 16),
-                      addToCartUIButton(context, orderController),
+                      addToCartUIButton(context, orderController, drugData),
                       const SizedBox(height: 24),
                     ],
                   ),

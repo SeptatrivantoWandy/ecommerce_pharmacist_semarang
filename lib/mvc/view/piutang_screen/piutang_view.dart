@@ -1,11 +1,27 @@
+import 'package:ecommerce_pharmacist_semarang/mvc/controller/piutang_controller.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/piutang/piutang_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/empty_container.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/failure_container.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/loading_container.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class PiutangView extends StatelessWidget {
+class PiutangView extends StatefulWidget {
   const PiutangView({super.key});
 
-  Widget piutangUICardView() {
+  @override
+  State<PiutangView> createState() => _PiutangViewState();
+}
+
+class _PiutangViewState extends State<PiutangView> {
+  PiutangController piutangController = PiutangController();
+
+  Future<void> refreshData() async {
+    setState(() {}); // Rebuild the widget after data is refreshed
+  }
+
+  Widget piutangUICardView(PiutangData piutangData) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -15,17 +31,17 @@ class PiutangView extends StatelessWidget {
       padding: PaddingMarginManager.allMiniSuperView,
       child: Column(
         children: [
-          const IntrinsicHeight(
+          IntrinsicHeight(
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   Symbols.calendar_clock_rounded,
                   color: ColorManager.negative,
                 ),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Text(
-                  '06/08/2024',
-                  style: TextStyle(color: ColorManager.negative),
+                  piutangData.invoiceDueDate,
+                  style: const TextStyle(color: ColorManager.negative),
                 )
               ],
             ),
@@ -54,9 +70,9 @@ class PiutangView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Text(
-                        '03/08/2024',
-                        style: TextStyle(
+                      Text(
+                        piutangData.invoiceDate,
+                        style: const TextStyle(
                             color: ColorManager.subheadFootnote,
                             fontSize: FontSizeManager.subheadFootnote),
                       ),
@@ -82,11 +98,12 @@ class PiutangView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Text(
-                        '#123456',
-                        style: TextStyle(
-                            color: ColorManager.subheadFootnote,
-                            fontSize: FontSizeManager.subheadFootnote),
+                      Text(
+                        '#${piutangData.invoiceNo}',
+                        style: const TextStyle(
+                          color: ColorManager.subheadFootnote,
+                          fontSize: FontSizeManager.subheadFootnote,
+                        ),
                       ),
                     ],
                   ),
@@ -101,11 +118,11 @@ class PiutangView extends StatelessWidget {
               borderRadius: BorderRadiusManager.textfieldRadius * 4,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: const IntrinsicHeight(
+            child: IntrinsicHeight(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(
                         Icons.payments_outlined,
@@ -122,8 +139,8 @@ class PiutangView extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Rp2.000.000',
-                        style: TextStyle(
+                        'Rp${piutangData.balance}',
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: ColorManager.primary,
                         ),
@@ -140,20 +157,25 @@ class PiutangView extends StatelessWidget {
   }
 
   Widget piutangUIListView() {
-    return ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: 10,
-      itemBuilder: (BuildContext context, int index) {
-        return piutangUICardView();
-      },
-      separatorBuilder: (BuildContext context, int index) => const SizedBox(
-        height: 16,
+    return RefreshIndicator(
+      backgroundColor: Colors.white,
+      displacement: 0,
+      onRefresh: refreshData,
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: piutangController.piutangDataList!.length,
+        itemBuilder: (BuildContext context, int index) {
+          return piutangUICardView(piutangController.piutangDataList![index]);
+        },
+        separatorBuilder: (BuildContext context, int index) => const SizedBox(
+          height: 16,
+        ),
       ),
     );
   }
 
   Widget bottomNavigationUIContainer() {
-    return const BottomAppBar(
+    return BottomAppBar(
       color: ColorManager.backgroundPage,
       height: 60,
       child: Column(
@@ -162,15 +184,15 @@ class PiutangView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'TOTAL SALDO',
                   style: TextStyle(
                       fontSize: FontSizeManager.title2,
                       fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Rp600.000',
-                  style: TextStyle(
+                  'Rp${piutangController.totalSaldo}',
+                  style: const TextStyle(
                     fontSize: FontSizeManager.title2,
                     fontWeight: FontWeight.bold,
                     color: ColorManager.primary,
@@ -179,22 +201,107 @@ class PiutangView extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
         ],
+      ),
+    );
+  }
+
+  Widget muatUlangUIButton() {
+    return SizedBox(
+      height: 34,
+      width: double.infinity,
+      child: FilledButton(
+        onPressed: refreshData,
+        style: FilledButton.styleFrom(
+          backgroundColor: ColorManager.primary,
+          foregroundColor: ColorManager.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        child: const Text(
+          'Muat Ulang',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget piutangViewBody = piutangUIListView();
+    return FutureBuilder(
+      future: piutangController.viewDidLoad(),
+      builder: (context, snapshot) {
+        // Declare variables for body content and bottom navigation bar
+        Widget piutangViewBody;
+        Widget? bottomNavigationBar;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saldo Piutang'),
-      ),
-      body: piutangViewBody,
-      bottomNavigationBar: bottomNavigationUIContainer(),
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show loading state
+          piutangViewBody = const LoadingContainer();
+          bottomNavigationBar = null; // Hide bottom navigation bar
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          if (piutangController.piutangError != null &&
+              piutangController.piutangError!.isNotEmpty) {
+            // Show the error state if there's an error message
+            piutangViewBody = Container(
+              margin: PaddingMarginManager.allSuperView,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FailureContainer(
+                      failureMessage:
+                          'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
+                      failureErrorCode: piutangController.piutangError!,
+                    ),
+                    const SizedBox(height: 16),
+                    muatUlangUIButton()
+                  ],
+                ),
+              ),
+            );
+            bottomNavigationBar = null; // Hide bottom navigation bar
+          } else if (piutangController.piutangDataList != null &&
+              piutangController.piutangDataList!.isNotEmpty) {
+            // Show the success state
+            piutangViewBody = piutangUIListView();
+            bottomNavigationBar =
+                bottomNavigationUIContainer(); // Show bottom navigation bar
+          } else {
+            // Show the empty state
+            piutangViewBody = const Center(
+              child: EmptyContainer(
+                emptyMessage: 'Tidak ada data piutang',
+              ),
+            );
+            bottomNavigationBar = null; // Hide bottom navigation bar
+          }
+        } else {
+          // Show the error state
+          piutangViewBody = Column(
+            children: [
+              FailureContainer(
+                failureMessage:
+                    'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
+                failureErrorCode: piutangController.piutangError!,
+              ),
+            ],
+          );
+          bottomNavigationBar = null; // Hide bottom navigation bar
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Saldo Piutang'),
+          ),
+          body: piutangViewBody,
+          bottomNavigationBar: bottomNavigationBar,
+        );
+      },
     );
   }
 }

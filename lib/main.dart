@@ -5,6 +5,13 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 // flutter build apk --build-name=1.2.0 --build-number=1
 // flutter clean && flutter packages get && flutter packages upgrade
 
+/* =============== Agenda =============== */
+/*
+
+1. Remake UI harusnya selector bagian satuan listOrder + modalny
+
+*/
+
 void main() {
   runApp(const MyApp());
 }

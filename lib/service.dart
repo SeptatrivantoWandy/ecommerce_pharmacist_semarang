@@ -1,36 +1,99 @@
 import 'dart:convert';
 
+import 'package:ecommerce_pharmacist_semarang/mvc/model/history/history_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgnbaru/mlgnbaru_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgnbaru/mlgnbaru_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/piutang/piutang_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/drug/drug_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/point/point_response.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 
+const baseUrl = 'http://103.178.175.164/ecommercePharmacist';
+
+class HttpStatusError {
+  static String getErrorMessage(int statusCode) {
+    switch (statusCode) {
+      case 400:
+        return 'Bad Request: The server could not understand the request due to invalid syntax.';
+      case 401:
+        return 'Unauthorized: The client must authenticate itself to get the requested response.';
+      case 403:
+        return 'Forbidden: The client does not have access rights to the content.';
+      case 404:
+        return 'Not Found: The server can not find the requested resource.';
+      case 405:
+        return 'Method Not Allowed: The request method is known by the server but is not supported by the target resource.';
+      case 408:
+        return 'Request Timeout: The server would like to shut down this unused connection.';
+      case 429:
+        return 'Too Many Requests: The user has sent too many requests in a given amount of time.';
+      case 500:
+        return 'Internal Server Error: The server has encountered a situation it doesn\'t know how to handle.';
+      case 502:
+        return 'Bad Gateway: The server was acting as a gateway or proxy and received an invalid response from the upstream server.';
+      case 503:
+        return 'Service Unavailable: The server is not ready to handle the request.';
+      case 504:
+        return 'Gateway Timeout: The server is acting as a gateway or proxy and did not get a response from the upstream server.';
+      default:
+        return 'Unknown Error: An unexpected error occurred with status code $statusCode.';
+    }
+  }
+}
+
 class MlgnService {
   Future<MlgnResponse> login(MlgnRequest request) async {
-    const url = 'http://103.178.175.164/ecommercePharmacist/login.php';
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(request.toJson()),
-    ).timeout(const Duration(seconds: 4));
+    final url = Uri.parse('$baseUrl/login.php');
 
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      return MlgnResponse.fromJson(jsonResponse);
-    } else {
-      throw Exception('Failed to login');
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return MlgnResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return MlgnResponse(
+          status: false,
+          message: errorMessage,
+          userId: '',
+          username: '',
+          userCode: '',
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return MlgnResponse(
+        status: false,
+        message: 'An unexpected error occurred',
+        userId: '',
+        username: '',
+        userCode: '',
+      );
     }
   }
 }
 
 class MlgnBaruService {
   Future<MlgnBaruResponse> register(MlgnBaruRequest request) async {
-    const url = 'http://103.178.175.164/ecommercePharmacist/register.php';
+    final url = Uri.parse('$baseUrl/register.php');
 
-    var requestBody = http.MultipartRequest('POST', Uri.parse(url));
+    var requestBody = http.MultipartRequest('POST', url);
 
     requestBody.fields['username'] = request.username;
     requestBody.fields['password'] = request.password;
@@ -52,23 +115,178 @@ class MlgnBaruService {
     requestBody.files.add(await http.MultipartFile.fromPath(
       'pharmacySIAPhoto',
       request.pharmacySIAPhoto.path,
-      contentType: MediaType.parse(lookupMimeType(request.pharmacySIAPhoto.path)!),
+      contentType:
+          MediaType.parse(lookupMimeType(request.pharmacySIAPhoto.path)!),
     ));
 
     requestBody.files.add(await http.MultipartFile.fromPath(
       'pharmacySIPAPhoto',
       request.pharmacySIPAPhoto.path,
-      contentType: MediaType.parse(lookupMimeType(request.pharmacySIPAPhoto.path)!),
+      contentType:
+          MediaType.parse(lookupMimeType(request.pharmacySIPAPhoto.path)!),
     ));
 
     final streamedResponse = await requestBody.send();
-    final response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 4));
 
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      return MlgnBaruResponse.fromJson(jsonResponse);
-    } else {
-      throw Exception('Failed to register');
+    try {
+      final response = await http.Response.fromStream(streamedResponse)
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return MlgnBaruResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return MlgnBaruResponse(
+          status: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return MlgnBaruResponse(
+        status: false,
+        message: 'An unexpected error occurred',
+      );
+    }
+  }
+}
+
+class PiutangService {
+  Future<PiutangResponse?> getPiutang(String userCode) async {
+    final url = Uri.parse('$baseUrl/getPiutang.php?userCode=$userCode');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return PiutangResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return PiutangResponse(
+          status: false,
+          message: errorMessage,
+          piutangData: [],
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return PiutangResponse(
+        status: false,
+        message: 'An unexpected error occurred',
+        piutangData: [],
+      );
+    }
+  }
+}
+
+class DrugService {
+  // Fetch drug data from the server
+  Future<DrugResponse?> getDrug() async {
+    final url = Uri.parse('$baseUrl/getDrug.php');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return DrugResponse.fromJson(jsonResponse);
+      } else {
+        // Handle non-200 status codes
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return DrugResponse(
+          status: false,
+          message: errorMessage,
+          drugData: [],
+        );
+      }
+    } catch (e) {
+      // Handle exceptions during the HTTP request
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return DrugResponse(
+        status: false,
+        message: 'An unexpected error occurred',
+        drugData: [],
+      );
+    }
+  }
+}
+
+class HistoryService {
+  Future<HistoryResponse?> getHistoryOrder(String userCode) async {
+    final url = Uri.parse('$baseUrl//getHistoryOrder.php?userCode=$userCode');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return HistoryResponse.fromJson(jsonResponse);
+      } else {
+        // Handle non-200 status codes
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return HistoryResponse(
+          status: false,
+          message: errorMessage,
+          orderHistoryData: [],
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return HistoryResponse(
+        status: false,
+        message: 'An unexpected error occurred',
+        orderHistoryData: [],
+      );
+    }
+  }
+}
+
+class PointService {
+  Future<PointResponse?> getSaldoPoint(String userCode, String startDate, String endDate) async {
+    final url = Uri.parse('$baseUrl/getSaldoPoint.php?userCode=$userCode&startDate=$startDate&endDate=$endDate');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return PointResponse.fromJson(jsonResponse);
+      } else {
+        // Handle non-200 status codes
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return PointResponse(
+          status: false,
+          message: errorMessage,
+          saldoPointData: [],
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return PointResponse(
+        status: false,
+        message: 'An unexpected error occurred',
+        saldoPointData: [],
+      );
     }
   }
 }

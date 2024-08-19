@@ -1,4 +1,8 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/history_controller.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/history/history_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/empty_container.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/failure_container.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/loading_container.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ri.dart';
@@ -14,7 +18,11 @@ class HistoryView extends StatefulWidget {
 class _HistoryViewState extends State<HistoryView> {
   HistoryController historyController = HistoryController();
 
-  Widget historyItemUICardView() {
+  Future<void> refreshData() async {
+    setState(() {}); // Rebuild the widget after data is refreshed
+  }
+
+  Widget historyItemUICardView(HistoryDrugData historyDrugData) {
     return Container(
       decoration: BoxDecoration(
         color: ColorManager.whitePrimaryBackground,
@@ -35,10 +43,10 @@ class _HistoryViewState extends State<HistoryView> {
                   color: ColorManager.primary,
                 ),
                 const SizedBox(width: 6),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Amlodipine 10 MG (MDK) 30S',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    historyDrugData.drugName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -51,10 +59,10 @@ class _HistoryViewState extends State<HistoryView> {
                     color: ColorManager.primary,
                     borderRadius: BorderRadiusManager.textfieldRadius * 4,
                   ),
-                  child: const Text(
+                  child: Text(
                     textAlign: TextAlign.center,
-                    'STRIP',
-                    style: TextStyle(
+                    historyDrugData.drugMeasure,
+                    style: const TextStyle(
                         color: ColorManager.white, fontWeight: FontWeight.bold),
                   ),
                 )
@@ -62,51 +70,51 @@ class _HistoryViewState extends State<HistoryView> {
             ),
           ),
           const SizedBox(height: 4),
-          const IntrinsicHeight(
+          IntrinsicHeight(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Jumlah',
                       style: TextStyle(color: Color.fromRGBO(22, 133, 129, 1)),
                     ),
-                    Text('2'),
-                    SizedBox(height: 4),
-                    Text(
+                    Text(historyDrugData.orderQty),
+                    const SizedBox(height: 4),
+                    const Text(
                       'Harga',
                       style: TextStyle(color: Color.fromRGBO(22, 133, 129, 1)),
                     ),
-                    Text('Rp5.000')
+                    Text('Rp${historyDrugData.drugPrice}')
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Bonus',
                       style: TextStyle(color: Color.fromRGBO(22, 133, 129, 1)),
                     ),
-                    Text('Rp2.000'),
-                    SizedBox(height: 4),
-                    Text(
+                    Text(historyDrugData.bonus),
+                    const SizedBox(height: 4),
+                    const Text(
                       'Diskon',
                       style: TextStyle(color: Color.fromRGBO(22, 133, 129, 1)),
                     ),
-                    Text('Rp1.000')
+                    Text('${historyDrugData.discount}%')
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Jumlah Harga',
                       style: TextStyle(color: Color.fromRGBO(22, 133, 129, 1)),
                     ),
-                    Text('Rp10.000')
+                    Text('Rp${historyDrugData.drugPriceTotal}')
                   ],
                 )
               ],
@@ -118,13 +126,13 @@ class _HistoryViewState extends State<HistoryView> {
     );
   }
 
-  Widget historyItemUIListView() {
+  Widget historyItemUIListView(HistoryData historyData) {
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: 3,
+      itemCount: historyData.drugData.length,
       itemBuilder: (BuildContext context, int index) {
-        return historyItemUICardView();
+        return historyItemUICardView(historyData.drugData[index]);
       },
       separatorBuilder: (BuildContext context, int index) => const SizedBox(
         height: 8,
@@ -132,7 +140,7 @@ class _HistoryViewState extends State<HistoryView> {
     );
   }
 
-  Widget historyUICardView() {
+  Widget historyUICardView(HistoryData historyData) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -155,17 +163,17 @@ class _HistoryViewState extends State<HistoryView> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const IntrinsicHeight(
+                      IntrinsicHeight(
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.calendar_month_rounded,
                               color: ColorManager.primary,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Text(
-                              '01/08/2024',
-                              style: TextStyle(
+                              historyData.orderDate,
+                              style: const TextStyle(
                                 color: ColorManager.subheadFootnote,
                               ),
                             )
@@ -192,9 +200,9 @@ class _HistoryViewState extends State<HistoryView> {
                               ),
                             ),
                             const SizedBox(width: 4),
-                            const Text(
-                              '#123456',
-                              style: TextStyle(
+                            Text(
+                              '#${historyData.orderNo}',
+                              style: const TextStyle(
                                   color: ColorManager.subheadFootnote,
                                   fontSize: FontSizeManager.subheadFootnote),
                             ),
@@ -206,7 +214,7 @@ class _HistoryViewState extends State<HistoryView> {
                   Container(
                     width: 118,
                     decoration: BoxDecoration(
-                      gradient: historyController.isApprove
+                      gradient: historyData.orderStatus != ''
                           ? const LinearGradient(
                               colors: [
                                 Color.fromRGBO(22, 133, 129, 1),
@@ -228,14 +236,14 @@ class _HistoryViewState extends State<HistoryView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            historyController.isApprove
+                            historyData.orderStatus != ''
                                 ? Icons.check_circle_outline_rounded
                                 : Icons.schedule,
                             color: ColorManager.white,
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            historyController.isApprove
+                            historyData.orderStatus != ''
                                 ? 'Disetujui'
                                 : 'Menunggu',
                             style: const TextStyle(
@@ -250,7 +258,7 @@ class _HistoryViewState extends State<HistoryView> {
               ),
             ),
           ),
-          historyItemUIListView(),
+          historyItemUIListView(historyData),
           const SizedBox(height: 10),
           Container(
             decoration: BoxDecoration(
@@ -258,11 +266,11 @@ class _HistoryViewState extends State<HistoryView> {
               borderRadius: BorderRadiusManager.textfieldRadius,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: const IntrinsicHeight(
+            child: IntrinsicHeight(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(
                         Icons.payments_outlined,
@@ -282,8 +290,8 @@ class _HistoryViewState extends State<HistoryView> {
                   Row(
                     children: [
                       Text(
-                        'Rp2.000.000',
-                        style: TextStyle(
+                        'Rp${historyData.orderTotal}',
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: ColorManager.white,
                         ),
@@ -300,27 +308,110 @@ class _HistoryViewState extends State<HistoryView> {
   }
 
   Widget historyUIListView() {
-    return ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: 10,
-      itemBuilder: (BuildContext context, int index) {
-        return historyUICardView();
-      },
-      separatorBuilder: (BuildContext context, int index) => const SizedBox(
-        height: 16,
+    return RefreshIndicator(
+      backgroundColor: Colors.white,
+      displacement: 0,
+      onRefresh: refreshData,
+      child: ListView.separated(
+        padding: const EdgeInsets.only(bottom: 16),
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: historyController.historyDataList!.length,
+        itemBuilder: (BuildContext context, int index) {
+          return historyUICardView(historyController.historyDataList![index]);
+        },
+        separatorBuilder: (BuildContext context, int index) => const SizedBox(
+          height: 16,
+        ),
+      ),
+    );
+  }
+
+  Widget muatUlangUIButton() {
+    return SizedBox(
+      height: 34,
+      width: double.infinity,
+      child: FilledButton(
+        onPressed: refreshData,
+        style: FilledButton.styleFrom(
+          backgroundColor: ColorManager.primary,
+          foregroundColor: ColorManager.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        child: const Text(
+          'Muat Ulang',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget historyViewBody = historyUIListView();
+    return FutureBuilder(
+      future: historyController.viewDidLoad(),
+      builder: (context, snapshot) {
+        Widget historyViewBody;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Riwayat Order Pesanan'),
-      ),
-      body: historyViewBody,
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show loading state
+          historyViewBody = const LoadingContainer();
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          if (historyController.historyError != null &&
+              historyController.historyError!.isNotEmpty) {
+            // Show the error state if there's an error message
+            historyViewBody = Container(
+              margin: PaddingMarginManager.allSuperView,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FailureContainer(
+                      failureMessage:
+                          'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
+                      failureErrorCode: historyController.historyError!,
+                    ),
+                    const SizedBox(height: 16),
+                    muatUlangUIButton()
+                  ],
+                ),
+              ),
+            );
+          } else if (historyController.historyDataList != null &&
+              historyController.historyDataList!.isNotEmpty) {
+            // Show the success state
+            historyViewBody = historyUIListView();
+          } else {
+            // Show the empty state
+            historyViewBody = const Center(
+              child: EmptyContainer(
+                emptyMessage: 'Tidak ada data riwayat',
+              ),
+            );
+          }
+        } else {
+          // Show the error state
+          historyViewBody = Column(
+            children: [
+              FailureContainer(
+                failureMessage:
+                    'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
+                failureErrorCode: historyController.historyError!,
+              ),
+            ],
+          );
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Riwayat Order Pesanan'),
+          ),
+          body: historyViewBody,
+        );
+      },
     );
   }
 }
