@@ -81,7 +81,7 @@ class RegisterDialog {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return const FailureDialog(
-          failureDialogText: 'Akun gagal di registrasi, coba lagi nanti',
+          failureDialogText: 'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi',
         );
       },
     );
