@@ -3,13 +3,13 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/loadin
 import 'package:flutter/material.dart';
 
 class LoginDialog {
-  void failureAlertDialog(BuildContext context) {
+  void failureAlertDialog(BuildContext context, String failureText) {
     showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const FailureDialog(
-          failureDialogText: 'Gagal login akun, coba beberapa saat lagi',
+        return FailureDialog(
+          failureDialogText: failureText,
         );
       },
     );

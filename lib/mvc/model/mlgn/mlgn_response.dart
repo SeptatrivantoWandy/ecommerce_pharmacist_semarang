@@ -17,11 +17,11 @@ class MlgnResponse {
 
   factory MlgnResponse.fromJson(Map<String, dynamic> json) {
     return MlgnResponse(
-      status: json['status'],
-      message: json['message'],
-      userId: json['userId'],
-      username: json['username'],
-      userCode: json['userCode']
+      status: json['status'] ?? false, // Provide a default value if null
+      message: json['message'] ?? 'Unknown error', // Handle null message
+      userId: json['userId'] ?? '', // Provide a default value for userId
+      username: json['username'] ?? '', // Provide a default value for username
+      userCode: json['userCode'] ?? '', // Provide a default value for userCode
     );
   }
 
