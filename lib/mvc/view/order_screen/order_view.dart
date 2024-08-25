@@ -1,6 +1,8 @@
+import 'package:ecommerce_pharmacist_semarang/mvc/controller/cart_controller.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/order_controller.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/drug/drug_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/order_screen/add_to_cart_modal.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/order_screen/order_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/empty_container.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/failure_container.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/loading_container.dart';
@@ -16,10 +18,27 @@ class OrderView extends StatefulWidget {
 
 class _OrderViewState extends State<OrderView> {
   OrderController orderController = OrderController();
+  CartController cartController = CartController();
+  OrderDialog orderDialog = OrderDialog();
   AddToCartModal addToCartModal = AddToCartModal();
 
+  late Future<void> futureView;
+
+  @override
+  void initState() {
+    super.initState();
+    futureView = orderController.viewDidLoad(cartController);
+  }
+
   Future<void> refreshData() async {
-    setState(() {}); // Rebuild the widget after data is refreshed
+    setState(() {
+      futureView = orderController.viewDidLoad(cartController);
+    });
+  }
+
+  Future<void> refreshCartLength() async {
+    await orderController.getCartLength(cartController);
+    setState(() {});
   }
 
   Widget searchUITextField() {
@@ -34,6 +53,7 @@ class _OrderViewState extends State<OrderView> {
         onChanged: (value) {
           setState(() {
             orderController.isNotEmptySearch = value.isNotEmpty;
+            orderController.searchDrug(value);
           });
         },
         style: const TextStyle(fontSize: FontSizeManager.headlineBody),
@@ -54,10 +74,8 @@ class _OrderViewState extends State<OrderView> {
               ? IconButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    orderController.searchMedicineUIController.clear();
-                    setState(() {
-                      orderController.isNotEmptySearch = false;
-                    });
+                    orderController.cancelSearchPressed();
+                    setState(() {});
                   },
                   icon: Icon(
                     Icons.cancel_rounded,
@@ -79,7 +97,8 @@ class _OrderViewState extends State<OrderView> {
         child: InkWell(
           borderRadius: BorderRadiusManager.textfieldRadius,
           onTap: () {
-            addToCartModal.medicineListPressed(context, orderController, drugData);
+            addToCartModal.medicineListPressed(context, orderController,
+                drugData, orderDialog, refreshCartLength);
           },
           child: Container(
             margin: const EdgeInsets.all(8),
@@ -99,9 +118,17 @@ class _OrderViewState extends State<OrderView> {
                               height: 100,
                               fit: BoxFit.fitHeight,
                               errorBuilder: (context, error, stackTrace) {
-                                return const Text('Failed to load image');
+                                return const SizedBox(
+                                  height: 62,
+                                  width: 62,
+                                  child: Icon(
+                                    Icons.broken_image_outlined,
+                                    size: 48,
+                                  ),
+                                );
                               },
-                              loadingBuilder: (context, child, loadingProgress) {
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
                                 if (loadingProgress == null) {
                                   return child; // Image is fully loaded
                                 } else {
@@ -116,6 +143,7 @@ class _OrderViewState extends State<OrderView> {
                       Column(
                         children: [
                           Container(
+                            width: 154,
                             decoration: BoxDecoration(
                               color: ColorManager.whitePrimaryBackground,
                               borderRadius:
@@ -123,15 +151,19 @@ class _OrderViewState extends State<OrderView> {
                             ),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 4),
-                            child: const Text(
-                              '1 - 5 = 3%',
-                              style: TextStyle(
+                            child: Text(
+                              drugData.drugDetail.kond1.isEmpty
+                                  ? '-'
+                                  : drugData.drugDetail.kond1,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
                                 color: ColorManager.primary,
                               ),
                             ),
                           ),
                           const SizedBox(height: 8),
                           Container(
+                            width: 154,
                             decoration: BoxDecoration(
                               color: ColorManager.whitePrimaryBackground,
                               borderRadius:
@@ -139,15 +171,19 @@ class _OrderViewState extends State<OrderView> {
                             ),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 4),
-                            child: const Text(
-                              '1 - 5 = 3%',
-                              style: TextStyle(
+                            child: Text(
+                              drugData.drugDetail.kond2.isEmpty
+                                  ? '-'
+                                  : drugData.drugDetail.kond2,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
                                 color: ColorManager.primary,
                               ),
                             ),
                           ),
                           const SizedBox(height: 8),
                           Container(
+                            width: 154,
                             decoration: BoxDecoration(
                               color: ColorManager.whitePrimaryBackground,
                               borderRadius:
@@ -155,9 +191,12 @@ class _OrderViewState extends State<OrderView> {
                             ),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 4),
-                            child: const Text(
-                              '1 - 5 = 3%',
-                              style: TextStyle(
+                            child: Text(
+                              drugData.drugDetail.kond3.isEmpty
+                                  ? '-'
+                                  : drugData.drugDetail.kond3,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
                                 color: ColorManager.primary,
                               ),
                             ),
@@ -168,10 +207,43 @@ class _OrderViewState extends State<OrderView> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  drugData.drugName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: drugData.drugName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors
+                              .black, // Assuming default text color is black
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' (${drugData.drugDetail.drugMeasure}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: ColorManager
+                              .primary, // Blue color for drugMeasure
+                        ),
+                      ),
+                      drugData.drugDetail.drugMeasure2.isNotEmpty
+                          ? TextSpan(
+                              text: ', ${drugData.drugDetail.drugMeasure2})',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: ColorManager
+                                    .primary, // Blue color for drugMeasure
+                              ),
+                            )
+                          : const TextSpan(
+                              text: ')',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: ColorManager
+                                    .primary, // Blue color for drugMeasure
+                              ),
+                            ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -180,7 +252,8 @@ class _OrderViewState extends State<OrderView> {
                     color: ColorManager.whitePrimaryBackground,
                     borderRadius: BorderRadiusManager.textfieldRadius * 4,
                   ),
-                  padding: const EdgeInsets.only(left: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: IntrinsicHeight(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,10 +262,10 @@ class _OrderViewState extends State<OrderView> {
                           children: [
                             Icon(
                               Icons.sell_rounded,
-                              size: 20,
+                              size: 18,
                               color: ColorManager.primary,
                             ),
-                            SizedBox(width: 8),
+                            SizedBox(width: 4),
                             Text(
                               'HARGA',
                               style: TextStyle(fontWeight: FontWeight.bold),
@@ -202,32 +275,12 @@ class _OrderViewState extends State<OrderView> {
                         Row(
                           children: [
                             Text(
-                              'Rp${drugData.drugDetail.hrg1Hv}',
+                              'Rp${orderController.formatBalance(drugData.drugDetail.hrg1Hv)}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: ColorManager.primary,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Container(
-                              width: 74,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: ColorManager.primary,
-                                borderRadius:
-                                    BorderRadiusManager.textfieldRadius * 4,
-                              ),
-                              child: Text(
-                                drugData.drugDetail.drugMeasure,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: ColorManager.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )
                           ],
                         )
                       ],
@@ -243,19 +296,35 @@ class _OrderViewState extends State<OrderView> {
   }
 
   Widget orderUIListView() {
-    return Expanded(
-      child: ListView.separated(
-        padding: const EdgeInsets.only(bottom: 16),
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: orderController.orderDataList!.length,
-        itemBuilder: (BuildContext context, int index) {
-          return orderUICardView(orderController.orderDataList![index]);
-        },
-        separatorBuilder: (BuildContext context, int index) => const SizedBox(
-          height: 16,
+    if (orderController.searchDataList!.isEmpty) {
+      return const Expanded(
+        child: Center(
+          child: EmptyContainer(
+            emptyMessage: 'Obat tidak ditemukan',
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Expanded(
+        child: RefreshIndicator(
+          backgroundColor: Colors.white,
+          displacement: 0,
+          onRefresh: refreshData,
+          child: ListView.separated(
+            padding: const EdgeInsets.only(bottom: 16),
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: orderController.searchDataList!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return orderUICardView(orderController.searchDataList![index]);
+            },
+            separatorBuilder: (BuildContext context, int index) =>
+                const SizedBox(
+              height: 16,
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   Widget muatUlangUIButton() {
@@ -263,7 +332,9 @@ class _OrderViewState extends State<OrderView> {
       height: 34,
       width: double.infinity,
       child: FilledButton(
-        onPressed: refreshData,
+        onPressed: () {
+          refreshData();
+        },
         style: FilledButton.styleFrom(
           backgroundColor: ColorManager.primary,
           foregroundColor: ColorManager.white,
@@ -281,10 +352,51 @@ class _OrderViewState extends State<OrderView> {
     );
   }
 
+  cartUIIconButton() {
+    return Stack(
+      clipBehavior: Clip.none, // To allow the badge to overflow the stack
+      children: [
+        IconButton(
+          onPressed: () {
+            orderController.cartAppBarPressed(context);
+          },
+          icon: const Icon(
+            Icons.shopping_cart_outlined,
+            color: ColorManager.primary,
+          ),
+        ),
+        if (orderController.cartLength != null &&
+            orderController.cartLength! > 0)
+          Positioned(
+            top: 6,
+            right: 10,
+            child: Container(
+              alignment: Alignment.center,
+              height: 16,
+              width: 16,
+              decoration: const BoxDecoration(
+                color: ColorManager.negative, // Background color of the badge
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                orderController.cartLength.toString(),
+                style: const TextStyle(
+                  color: ColorManager.white, // Text color of the badge
+                  fontSize: FontSizeManager.subheadFootnote -
+                      2, // Font size of the badge text
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: orderController.viewDidLoad(),
+      future: futureView,
       builder: (context, snapshot) {
         Widget orderViewBody;
 
@@ -356,15 +468,7 @@ class _OrderViewState extends State<OrderView> {
                   color: ColorManager.primary,
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  orderController.cartAppBarPressed(context);
-                },
-                icon: const Icon(
-                  Icons.shopping_cart_outlined,
-                  color: ColorManager.primary,
-                ),
-              )
+              cartUIIconButton()
             ],
           ),
           body: orderViewBody,

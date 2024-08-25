@@ -8,7 +8,9 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 /* =============== Agenda =============== */
 /*
 
-1. Remake UI harusnya selector bagian satuan listOrder + modalny
+1. Claim point ganti body request tanpa invoiceNumber 
+2. Bagian order tinggal increment decrement function
+3. process order ganti body request tanpa orderNo
 
 */
 

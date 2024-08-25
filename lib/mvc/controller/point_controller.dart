@@ -1,6 +1,7 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/model/point/point_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/claim_point_screen/claim_point_view.dart';
 import 'package:ecommerce_pharmacist_semarang/service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,7 @@ class PointController {
   String? userCode;
   List<SaldoPointData>? pointDataList;
   String? pointError;
+  String? totalPointNow;
 
   Future<void> loadUserData() async {
     final SharedPreferences prefs = await futurePrefs;
@@ -27,7 +29,9 @@ class PointController {
     if (userCode != null && userCode!.isNotEmpty) {
       await fetchPoint();
     } else {
-      print('User code not found');
+      if (kDebugMode) {
+        print('User code not found');
+      }
     }
   }
 
@@ -97,6 +101,7 @@ class PointController {
 
     if (response != null && response.status) {
       pointError = null;
+      totalPointNow = formatBalance(response.totalPointNow);
       List<SaldoPointData> formattedPointDataList = [];
 
       // Iterate through the response data and format the dates and balances
@@ -121,11 +126,12 @@ class PointController {
     }
   }
 
-  void klaimPointPressed(BuildContext context) {
-    Navigator.of(context).push(
+  Future<bool> klaimPointPressed(BuildContext context) async {
+    final result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => const ClaimPointView(),
       ),
     );
+    return result;
   }
 }

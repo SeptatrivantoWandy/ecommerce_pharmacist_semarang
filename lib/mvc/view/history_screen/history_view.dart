@@ -18,8 +18,18 @@ class HistoryView extends StatefulWidget {
 class _HistoryViewState extends State<HistoryView> {
   HistoryController historyController = HistoryController();
 
+  late Future<void> futureView;
+
+  @override
+  void initState() {
+    super.initState();
+    futureView = historyController.viewDidLoad();
+  }
+
   Future<void> refreshData() async {
-    setState(() {}); // Rebuild the widget after data is refreshed
+    setState(() {
+      futureView = historyController.viewDidLoad();
+    });
   }
 
   Widget historyItemUICardView(HistoryDrugData historyDrugData) {
@@ -229,8 +239,7 @@ class _HistoryViewState extends State<HistoryView> {
                             ),
                       borderRadius: BorderRadiusManager.textfieldRadius * 4,
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     child: IntrinsicHeight(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -352,7 +361,7 @@ class _HistoryViewState extends State<HistoryView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: historyController.viewDidLoad(),
+      future: futureView,
       builder: (context, snapshot) {
         Widget historyViewBody;
 
@@ -409,7 +418,7 @@ class _HistoryViewState extends State<HistoryView> {
           appBar: AppBar(
             title: const Text('Riwayat Order Pesanan'),
           ),
-          body: historyViewBody,
+          body: SafeArea(child: historyViewBody),
         );
       },
     );

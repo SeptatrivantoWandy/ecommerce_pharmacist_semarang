@@ -16,8 +16,18 @@ class PointView extends StatefulWidget {
 class _PointViewState extends State<PointView> {
   PointController pointController = PointController();
 
+  late Future<void> futureView;
+
+  @override
+  void initState() {
+    super.initState();
+    futureView = pointController.viewDidLoad();
+  }
+
   Future<void> refreshData() async {
-    setState(() {}); // Rebuild the widget after data is refreshed
+    setState(() {
+      futureView = pointController.viewDidLoad();
+    });
   }
 
   Widget klaimPointUIButton() {
@@ -26,8 +36,11 @@ class _PointViewState extends State<PointView> {
       height: 34,
       width: 84,
       child: FilledButton(
-        onPressed: () {
-          pointController.klaimPointPressed(context);
+        onPressed: () async {
+          final result = await pointController.klaimPointPressed(context);
+          if (result) {
+            refreshData();
+          }
         },
         style: FilledButton.styleFrom(
           padding: EdgeInsets.zero,
@@ -278,7 +291,7 @@ class _PointViewState extends State<PointView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: pointController.viewDidLoad(),
+      future: futureView,
       builder: (context, snapshot) {
         Widget pointViewBody;
 

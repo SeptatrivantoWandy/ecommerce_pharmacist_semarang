@@ -3,6 +3,7 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/register_screen/image_pic
 import 'package:ecommerce_pharmacist_semarang/mvc/view/register_screen/register_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/healthicons.dart';
@@ -458,6 +459,7 @@ class _RegisterViewState extends State<RegisterView> {
           margin: PaddingMarginManager.textField,
           child: TextField(
             keyboardType: TextInputType.phone,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.nomorTeleponUIController,
             textAlignVertical: TextAlignVertical.center,
@@ -570,6 +572,7 @@ class _RegisterViewState extends State<RegisterView> {
           margin: PaddingMarginManager.textField,
           child: TextField(
             keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.nomorIzinApotekUIController,
             textAlignVertical: TextAlignVertical.center,
@@ -817,6 +820,7 @@ class _RegisterViewState extends State<RegisterView> {
           margin: PaddingMarginManager.textField,
           child: TextField(
             keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.nomorIzinApotekerUIController,
             textAlignVertical: TextAlignVertical.center,
@@ -1190,6 +1194,8 @@ class _RegisterViewState extends State<RegisterView> {
           height: SizeManager.textFieldContainerHeight,
           margin: PaddingMarginManager.textField,
           child: TextField(
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: registerController.npwpFakturUIController,
             textAlignVertical: TextAlignVertical.center,

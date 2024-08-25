@@ -2,14 +2,21 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
 class QuantityButton extends StatefulWidget {
-  const QuantityButton({super.key});
-
+  const QuantityButton({super.key, required this.initialQuantity});
+  final int initialQuantity; // Add a field to accept the initial quantity
+  
   @override
   State<QuantityButton> createState() => _QuantityButtonState();
 }
 
 class _QuantityButtonState extends State<QuantityButton> {
-  int quantityMedicine = 1;
+  late int quantityMedicine;
+
+  @override
+  void initState() {
+    super.initState();
+    quantityMedicine = widget.initialQuantity;
+  }
 
   void incrementQuantity() {
     quantityMedicine++;

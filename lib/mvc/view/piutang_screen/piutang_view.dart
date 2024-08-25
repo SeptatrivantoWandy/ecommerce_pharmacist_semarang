@@ -17,8 +17,18 @@ class PiutangView extends StatefulWidget {
 class _PiutangViewState extends State<PiutangView> {
   PiutangController piutangController = PiutangController();
 
+  late Future<void> futureView;
+
+  @override
+  void initState() {
+    super.initState();
+    futureView = piutangController.viewDidLoad();
+  }
+
   Future<void> refreshData() async {
-    setState(() {}); // Rebuild the widget after data is refreshed
+    setState(() {
+      futureView = piutangController.viewDidLoad();
+    });
   }
 
   Widget piutangUICardView(PiutangData piutangData) {
@@ -233,7 +243,7 @@ class _PiutangViewState extends State<PiutangView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: piutangController.viewDidLoad(),
+      future: futureView,
       builder: (context, snapshot) {
         // Declare variables for body content and bottom navigation bar
         Widget piutangViewBody;

@@ -1,5 +1,6 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/model/piutang/piutang_response.dart';
 import 'package:ecommerce_pharmacist_semarang/service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +24,9 @@ class PiutangController {
     if (userCode != null && userCode!.isNotEmpty) {
       await fetchPiutang();
     } else {
-      print('User code not found');
+      if (kDebugMode) {
+        print('User code not found');
+      }
     }
   }
 
@@ -66,7 +69,6 @@ class PiutangController {
     // await Future.delayed(const Duration(seconds: 2));
 
     if (response != null && response.status) {
-      
       piutangError = null;
       // response.printPiutangResponse();
 
