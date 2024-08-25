@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:ecommerce_pharmacist_semarang/mvc/model/addtocart/add_to_cart_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/addtocart/add_to_cart_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/history/history_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_response.dart';
@@ -80,7 +85,7 @@ class MlgnService {
       }
       return MlgnResponse(
         status: false,
-        message: 'An unexpected error occurred',
+        message: 'An unexpected error occurred.',
         userId: '',
         username: '',
         userCode: '',
@@ -150,7 +155,7 @@ class MlgnBaruService {
       }
       return MlgnBaruResponse(
         status: false,
-        message: 'An unexpected error occurred',
+        message: 'An unexpected error occurred.',
       );
     }
   }
@@ -182,7 +187,7 @@ class PiutangService {
       }
       return PiutangResponse(
         status: false,
-        message: 'An unexpected error occurred',
+        message: 'An unexpected error occurred.',
         piutangData: [],
       );
     }
@@ -218,7 +223,7 @@ class DrugService {
       }
       return DrugResponse(
         status: false,
-        message: 'An unexpected error occurred',
+        message: 'An unexpected error occurred.',
         drugData: [],
       );
     }
@@ -251,7 +256,7 @@ class HistoryService {
       }
       return HistoryResponse(
         status: false,
-        message: 'An unexpected error occurred',
+        message: 'An unexpected error occurred.',
         orderHistoryData: [],
       );
     }
@@ -259,8 +264,10 @@ class HistoryService {
 }
 
 class PointService {
-  Future<PointResponse?> getSaldoPoint(String userCode, String startDate, String endDate) async {
-    final url = Uri.parse('$baseUrl/getSaldoPoint.php?userCode=$userCode&startDate=$startDate&endDate=$endDate');
+  Future<PointResponse?> getSaldoPoint(
+      String userCode, String startDate, String endDate) async {
+    final url = Uri.parse(
+        '$baseUrl/getSaldoPoint.php?userCode=$userCode&startDate=$startDate&endDate=$endDate');
 
     try {
       final response = await http.get(url).timeout(const Duration(seconds: 4));
@@ -275,6 +282,7 @@ class PointService {
         return PointResponse(
           status: false,
           message: errorMessage,
+          totalPointNow: '',
           saldoPointData: [],
         );
       }
@@ -284,8 +292,118 @@ class PointService {
       }
       return PointResponse(
         status: false,
-        message: 'An unexpected error occurred',
+        message: 'An unexpected error occurred.',
+        totalPointNow: '',
         saldoPointData: [],
+      );
+    }
+  }
+}
+
+class ClaimPointService {
+  Future<ClaimPointResponse> claimPoints(ClaimPointRequest request) async {
+    final url = Uri.parse('$baseUrl/claimPoint.php');
+
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return ClaimPointResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return ClaimPointResponse(
+          status: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return ClaimPointResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
+class AddToCartService {
+  Future<AddToCartResponse> addToCart(AddToCartRequest request) async {
+    final url = Uri.parse('$baseUrl/addToCart.php');
+
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return AddToCartResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return AddToCartResponse(
+          status: false,
+          exist: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return AddToCartResponse(
+        status: false,
+        exist: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
+class CartService {
+  Future<CartResponse?> getCart(String userCode) async {
+    final url = Uri.parse('$baseUrl/getCart.php?userCode=$userCode');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return CartResponse.fromJson(jsonResponse);
+      } else {
+        // Handle non-200 status codes
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return CartResponse(
+          status: false,
+          message: errorMessage,
+          cartData: [],
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return CartResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+        cartData: [],
       );
     }
   }

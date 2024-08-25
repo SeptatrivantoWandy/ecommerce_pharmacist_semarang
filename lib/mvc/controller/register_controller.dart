@@ -385,7 +385,6 @@ class RegisterController {
 
     try {
       MlgnBaruResponse response = await service.register(request);
-      response.printMlgnBaruResponse();
       if (response.status) {
         success = true;
       }

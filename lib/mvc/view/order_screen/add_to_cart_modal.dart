@@ -1,5 +1,7 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/order_controller.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/drug/drug_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/order_screen/drug_measure_segmented_button.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/order_screen/order_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +17,11 @@ class AddToCartModal {
     );
   }
 
-  Widget qtyUIButton(OrderController orderController, StateSetter setState) {
+  Widget qtyUIButton(
+    OrderController orderController,
+    StateSetter setState,
+    DrugData drugData,
+  ) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadiusManager.textfieldRadius,
@@ -40,7 +46,7 @@ class AddToCartModal {
                   ? null
                   : () {
                       setState(() {
-                        orderController.decrementQuantity();
+                        orderController.decrementQuantity(drugData);
                       });
                     },
               icon: const Icon(
@@ -50,7 +56,7 @@ class AddToCartModal {
             ),
           ),
           SizedBox(
-            width: 48,
+            width: 56,
             child: Text(
               '${orderController.quantityMedicine}',
               textAlign: TextAlign.center,
@@ -68,7 +74,7 @@ class AddToCartModal {
               constraints: const BoxConstraints(),
               onPressed: () {
                 setState(() {
-                  orderController.incrementQuantity();
+                  orderController.incrementQuantity(drugData);
                 });
               },
               icon: const Icon(Icons.add),
@@ -80,8 +86,8 @@ class AddToCartModal {
     );
   }
 
-  Widget qtySectionUIContainer(
-      OrderController orderController, StateSetter setState, DrugData drugData) {
+  Widget qtySectionUIContainer(OrderController orderController,
+      StateSetter setState, DrugData drugData) {
     return IntrinsicHeight(
       child: Row(
         children: [
@@ -89,20 +95,21 @@ class AddToCartModal {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadiusManager.textfieldRadius,
-              // child: Image.asset(
-              //   'assets/123650.jpeg',
-              //   height: 124,
-              //   // width: 200,
-              //   fit: BoxFit.cover,
-              // ),
               child: Container(
                 color: ColorManager.white,
                 child: Image.network(
                   drugData.drugImage,
-                  height: 100,
+                  height: 116,
                   fit: BoxFit.fitHeight,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Text('Failed to load image');
+                    return const SizedBox(
+                      height: 62,
+                      width: 62,
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                        size: 48,
+                      ),
+                    );
                   },
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) {
@@ -121,14 +128,28 @@ class AddToCartModal {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
+                'Satuan Obat',
+                style: TextStyle(
+                  fontSize: FontSizeManager.subheadFootnote,
+                  color: ColorManager.subheadFootnote,
+                ),
+              ),
+              const SizedBox(height: 2),
+              DrugMeasureSegmentedButton(
+                drugMeasure: drugData.drugDetail.drugMeasure,
+                drugMeasure2: drugData.drugDetail.drugMeasure2,
+                orderController: orderController,
+              ),
+              const SizedBox(height: 16),
+              const Text(
                 'Jumlah Pesanan',
                 style: TextStyle(
                   fontSize: FontSizeManager.subheadFootnote,
                   color: ColorManager.subheadFootnote,
                 ),
               ),
-              const SizedBox(height: 8),
-              qtyUIButton(orderController, setState)
+              const SizedBox(height: 2),
+              qtyUIButton(orderController, setState, drugData)
             ],
           ),
           const SizedBox(width: 16),
@@ -137,14 +158,14 @@ class AddToCartModal {
     );
   }
 
-  Widget totalHargaUILabel(DrugData drugData) {
+  Widget totalHargaUILabel(DrugData drugData, OrderController orderController) {
     return Container(
       margin: PaddingMarginManager.horizontallySuperView,
       decoration: BoxDecoration(
         color: ColorManager.greyPrimaryBackground,
         borderRadius: BorderRadiusManager.textfieldRadius * 4,
       ),
-      padding: const EdgeInsets.only(left: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: IntrinsicHeight(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,10 +174,10 @@ class AddToCartModal {
               children: [
                 Icon(
                   Icons.sell_rounded,
-                  size: 20,
+                  size: 18,
                   color: ColorManager.primary,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 Text(
                   'TOTAL HARGA',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -166,31 +187,13 @@ class AddToCartModal {
             Row(
               children: [
                 Text(
-                  'Rp${drugData.drugDetail.hrg1Hv}',
+                  'Rp${orderController.formatBalance(orderController.resultDrugPrice.toString())}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: ColorManager.primary,
                   ),
                 ),
                 const SizedBox(width: 8),
-                Container(
-                  width: 74,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: ColorManager.primary,
-                    borderRadius: BorderRadiusManager.textfieldRadius * 4,
-                  ),
-                  child: Text(
-                    drugData.drugDetail.drugMeasure,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: ColorManager.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
               ],
             )
           ],
@@ -199,16 +202,44 @@ class AddToCartModal {
     );
   }
 
-  Widget addToCartUIButton(BuildContext context,
-      OrderController orderController, DrugData drugData) {
+  Widget addToCartUIButton(
+      BuildContext context,
+      OrderController orderController,
+      DrugData drugData,
+      OrderDialog orderDialog,
+      VoidCallback refreshCartLength) {
     return Container(
       margin: PaddingMarginManager.horizontallySuperView,
       height: 34,
       width: double.infinity,
       child: FilledButton(
-        onPressed: () {
-          orderController.masukkanKeranjangPressed();
-          Navigator.of(context).pop();
+        onPressed: () async {
+          orderDialog.loadingAlertDialog(context);
+          bool isSuccess = await orderController.masukkanKeranjangPressed(
+            context,
+            drugData.drugCode,
+            orderDialog,
+          );
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+          if (isSuccess) {
+            if (context.mounted) {
+              // Navigator.of(context).pop();
+              orderDialog.successAlertDialog(
+                  context, 'Produk berhasil ditambahkan ke keranjang.');
+              refreshCartLength();
+            }
+          } else {
+            if (context.mounted) {
+              // Navigator.of(context).pop();
+              orderDialog.failureAlertDialog(
+                context,
+                'Gagal menambahkan ke keranjang.',
+                orderController.orderError!,
+              );
+            }
+          }
         },
         style: FilledButton.styleFrom(
           backgroundColor: ColorManager.primary,
@@ -227,9 +258,14 @@ class AddToCartModal {
     );
   }
 
-  void medicineListPressed(BuildContext context,
-      OrderController orderController, DrugData drugData) {
-    orderController.quantityMedicine = 1;
+  void medicineListPressed(
+    BuildContext context,
+    OrderController orderController,
+    DrugData drugData,
+    OrderDialog orderDialog,
+    VoidCallback refreshCartLength,
+  ) {
+    orderController.initAddToCartModal(drugData);
     showModalBottomSheet(
       useSafeArea: true,
       isScrollControlled: true,
@@ -288,14 +324,16 @@ class AddToCartModal {
                   width: double.infinity,
                   child: Column(
                     children: [
-                      qtySectionUIContainer(orderController, setState, drugData),
+                      qtySectionUIContainer(
+                          orderController, setState, drugData),
                       const SizedBox(height: 8),
                       medicineNameUILabel(drugData),
                       const SizedBox(height: 8),
-                      totalHargaUILabel(drugData),
+                      totalHargaUILabel(drugData, orderController),
                       const SizedBox(height: 16),
-                      addToCartUIButton(context, orderController, drugData),
-                      const SizedBox(height: 24),
+                      addToCartUIButton(context, orderController, drugData,
+                          orderDialog, refreshCartLength),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),

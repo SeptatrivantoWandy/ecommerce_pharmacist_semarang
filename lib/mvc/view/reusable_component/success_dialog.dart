@@ -2,8 +2,10 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
 class SuccessDialog extends StatelessWidget {
-  const SuccessDialog({super.key, required this.successDialogText});
+  const SuccessDialog(
+      {super.key, required this.successDialogText, required this.isPopAgain});
   final String successDialogText;
+  final bool isPopAgain;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,9 @@ class SuccessDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            Navigator.pop(context, true);
+            if (isPopAgain) {
+              Navigator.pop(context, true);
+            }
           },
           child: const Text('OK'),
         )

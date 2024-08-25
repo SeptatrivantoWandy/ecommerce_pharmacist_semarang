@@ -1,5 +1,9 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/cart_controller.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/cart_screen/quantity_button.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/empty_container.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/failure_container.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/loading_container.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -14,69 +18,18 @@ class CartView extends StatefulWidget {
 class _CartViewState extends State<CartView> {
   CartController cartController = CartController();
 
-  Widget qtyUIButton() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadiusManager.textfieldRadius,
-        color: ColorManager.backgroundPage,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: cartController.quantityMedicine == 1
-                  ? ColorManager.disabledBackground
-                  : const Color.fromARGB(255, 255, 223, 217),
-              borderRadius: BorderRadiusManager.textfieldRadius,
-            ),
-            height: 34,
-            width: 34,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: cartController.quantityMedicine == 1
-                  ? null
-                  : () {
-                      setState(() {
-                        cartController.decrementQuantity();
-                      });
-                    },
-              icon: const Icon(
-                Icons.remove,
-              ),
-              color: Colors.red,
-            ),
-          ),
-          SizedBox(
-            width: 48,
-            child: Text(
-              '${cartController.quantityMedicine}',
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: ColorManager.greyPrimaryBackground,
-              borderRadius: BorderRadiusManager.textfieldRadius,
-            ),
-            height: 34,
-            width: 34,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: () {
-                setState(() {
-                  cartController.incrementQuantity();
-                });
-              },
-              icon: const Icon(Icons.add),
-              color: ColorManager.primary,
-            ),
-          ),
-        ],
-      ),
-    );
+  late Future<void> futureView;
+
+  @override
+  void initState() {
+    super.initState();
+    futureView = cartController.viewDidLoad();
+  }
+
+  Future<void> refreshData() async {
+    setState(() {
+      futureView = cartController.viewDidLoad();
+    });
   }
 
   Widget deleteCartUIButton() {
@@ -99,7 +52,7 @@ class _CartViewState extends State<CartView> {
     );
   }
 
-  Widget cartUICardView() {
+  Widget cartUICardView(CartData cartData) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -110,13 +63,30 @@ class _CartViewState extends State<CartView> {
       child: IntrinsicHeight(
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadiusManager.textfieldRadius,
-              child: Image.asset(
-                'assets/123650.jpeg',
+            Container(
+              color: ColorManager.white,
+              child: Image.network(
+                cartData.drugData.drugImage,
                 height: 62,
                 width: 62,
-                fit: BoxFit.cover,
+                fit: BoxFit.fitHeight,
+                errorBuilder: (context, error, stackTrace) {
+                  return const SizedBox(
+                    height: 62,
+                    width: 62,
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                      size: 48,
+                    ),
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child; // Image is fully loaded
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               ),
             ),
             const SizedBox(width: 8),
@@ -127,9 +97,9 @@ class _CartViewState extends State<CartView> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Amlodipine 10 MG (MDK) 30S',
+                          cartData.drugData.drugName,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -142,10 +112,10 @@ class _CartViewState extends State<CartView> {
                           color: ColorManager.primary,
                           borderRadius: BorderRadiusManager.textfieldRadius * 4,
                         ),
-                        child: const Text(
+                        child: Text(
                           textAlign: TextAlign.center,
-                          'STRIP',
-                          style: TextStyle(
+                          cartData.cartMeasure,
+                          style: const TextStyle(
                               color: ColorManager.white,
                               fontWeight: FontWeight.bold),
                         ),
@@ -156,16 +126,17 @@ class _CartViewState extends State<CartView> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Rp200.000',
-                          style: TextStyle(color: ColorManager.primary),
+                          'Rp${cartData.cartDrugPrice}',
+                          style: const TextStyle(color: ColorManager.primary),
                         ),
                       ),
                       const SizedBox(width: 8),
                       Row(
                         children: [
-                          const QuantityButton(),
+                          QuantityButton(
+                              initialQuantity: int.parse(cartData.cartQty)),
                           const SizedBox(width: 8),
                           deleteCartUIButton()
                         ],
@@ -182,14 +153,19 @@ class _CartViewState extends State<CartView> {
   }
 
   Widget cartUIListView() {
-    return ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: 10,
-      itemBuilder: (BuildContext context, int index) {
-        return cartUICardView();
-      },
-      separatorBuilder: (BuildContext context, int index) => const SizedBox(
-        height: 16,
+    return RefreshIndicator(
+      backgroundColor: Colors.white,
+      displacement: 0,
+      onRefresh: refreshData,
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: cartController.cartDataList!.length,
+        itemBuilder: (BuildContext context, int index) {
+          return cartUICardView(cartController.cartDataList![index]);
+        },
+        separatorBuilder: (BuildContext context, int index) => const SizedBox(
+          height: 16,
+        ),
       ),
     );
   }
@@ -223,20 +199,19 @@ class _CartViewState extends State<CartView> {
       height: 136,
       child: Column(
         children: [
-          const IntrinsicHeight(
+          IntrinsicHeight(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'TOTAL',
                   style: TextStyle(
-                    fontSize: FontSizeManager.title2,
-                    fontWeight: FontWeight.bold
-                  ),
+                      fontSize: FontSizeManager.title2,
+                      fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Rp600.000',
-                  style: TextStyle(
+                  'Rp${cartController.totalCartValue}',
+                  style: const TextStyle(
                     fontSize: FontSizeManager.title2,
                     fontWeight: FontWeight.bold,
                     color: ColorManager.primary,
@@ -260,18 +235,101 @@ class _CartViewState extends State<CartView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Widget cartViewBody = cartUIListView();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Keranjang Belanja',
+  Widget muatUlangUIButton() {
+    return SizedBox(
+      height: 34,
+      width: double.infinity,
+      child: FilledButton(
+        onPressed: refreshData,
+        style: FilledButton.styleFrom(
+          backgroundColor: ColorManager.primary,
+          foregroundColor: ColorManager.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        child: const Text(
+          'Muat Ulang',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
-      body: cartViewBody,
-      bottomNavigationBar: bottomNavigationUIContainer(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: futureView, // Assuming you have a `viewDidLoad` method in `cartController`
+      builder: (context, snapshot) {
+        // Declare variables for body content and bottom navigation bar
+        Widget cartViewBody;
+        Widget? bottomNavigationBar;
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show loading state
+          cartViewBody = const LoadingContainer();
+          bottomNavigationBar = null; // Hide bottom navigation bar
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          if (cartController.cartError != null &&
+              cartController.cartError!.isNotEmpty) {
+            // Show the error state if there's an error message
+            cartViewBody = Container(
+              margin: PaddingMarginManager.allSuperView,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FailureContainer(
+                      failureMessage:
+                          'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
+                      failureErrorCode: cartController.cartError!,
+                    ),
+                    const SizedBox(height: 16),
+                    muatUlangUIButton()
+                  ],
+                ),
+              ),
+            );
+            bottomNavigationBar = null; // Hide bottom navigation bar
+          } else if (cartController.cartDataList != null &&
+              cartController.cartDataList!.isNotEmpty) {
+            // Show the success state
+            cartViewBody = cartUIListView();
+            bottomNavigationBar =
+                bottomNavigationUIContainer(); // Show bottom navigation bar
+          } else {
+            // Show the empty state
+            cartViewBody = const Center(
+              child: EmptyContainer(
+                emptyMessage: 'Tidak ada data dalam keranjang',
+              ),
+            );
+            bottomNavigationBar = null; // Hide bottom navigation bar
+          }
+        } else {
+          // Show the error state
+          cartViewBody = Column(
+            children: [
+              FailureContainer(
+                failureMessage:
+                    'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
+                failureErrorCode: cartController.cartError!,
+              ),
+            ],
+          );
+          bottomNavigationBar = null; // Hide bottom navigation bar
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Keranjang Belanja'),
+          ),
+          body: cartViewBody,
+          bottomNavigationBar: bottomNavigationBar,
+        );
+      },
     );
   }
 }

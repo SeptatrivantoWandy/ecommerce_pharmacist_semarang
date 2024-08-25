@@ -3,11 +3,13 @@ import 'package:flutter/foundation.dart';
 class PointResponse {
   bool status;
   String message;
+  String totalPointNow;
   List<SaldoPointData> saldoPointData;
 
   PointResponse({
     required this.status,
     required this.message,
+    required this.totalPointNow,
     required this.saldoPointData,
   });
 
@@ -15,6 +17,7 @@ class PointResponse {
     return PointResponse(
       status: json['status'],
       message: json['message'],
+      totalPointNow: json['totalPointNow'],
       saldoPointData: List<SaldoPointData>.from(
         json['saldoPointData'].map((data) => SaldoPointData.fromJson(data)),
       ),
@@ -26,6 +29,7 @@ class PointResponse {
       print('========== printPointResponse ==========');
       print('Status: $status');
       print('Message: $message');
+      print('Total Point Now: $totalPointNow');
       print('Saldo Point Data:');
       for (var data in saldoPointData) {
         print('User Code: ${data.userCode}');

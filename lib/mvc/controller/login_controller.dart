@@ -47,7 +47,7 @@ class LoginController {
     return false;
   }
 
-  loginAccount(BuildContext context) async {
+  Future<void> loginAccount(BuildContext context) async {
     final SharedPreferences prefs = await futurePrefs;
     MlgnService service = MlgnService();
     MlgnRequest request = MlgnRequest(
@@ -82,7 +82,7 @@ class LoginController {
       }
       if (context.mounted) {
         Navigator.of(context).pop();
-        loginDialog.failureAlertDialog(context, 'An unexpected error occurred');
+        loginDialog.failureAlertDialog(context, 'An unexpected error occurred.');
       }
     }
   }
