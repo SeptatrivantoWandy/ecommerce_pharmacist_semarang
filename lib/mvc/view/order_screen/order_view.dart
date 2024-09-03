@@ -97,8 +97,13 @@ class _OrderViewState extends State<OrderView> {
         child: InkWell(
           borderRadius: BorderRadiusManager.textfieldRadius,
           onTap: () {
-            addToCartModal.medicineListPressed(context, orderController,
-                drugData, orderDialog, refreshCartLength);
+            addToCartModal.medicineListPressed(
+              context,
+              orderController,
+              drugData,
+              orderDialog,
+              refreshCartLength,
+            );
           },
           child: Container(
             margin: const EdgeInsets.all(8),
@@ -143,7 +148,7 @@ class _OrderViewState extends State<OrderView> {
                       Column(
                         children: [
                           Container(
-                            width: 154,
+                            width: 158,
                             decoration: BoxDecoration(
                               color: ColorManager.whitePrimaryBackground,
                               borderRadius:
@@ -154,7 +159,10 @@ class _OrderViewState extends State<OrderView> {
                             child: Text(
                               drugData.drugDetail.kond1.isEmpty
                                   ? '-'
-                                  : drugData.drugDetail.kond1,
+                                  : drugData.drugDetail.kond1
+                                      .replaceAll('=', ' = ')
+                                      .replaceAll('-', ' - ')
+                                      .replaceAll('>', ' >'),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: ColorManager.primary,
@@ -163,7 +171,7 @@ class _OrderViewState extends State<OrderView> {
                           ),
                           const SizedBox(height: 8),
                           Container(
-                            width: 154,
+                            width: 158,
                             decoration: BoxDecoration(
                               color: ColorManager.whitePrimaryBackground,
                               borderRadius:
@@ -174,7 +182,10 @@ class _OrderViewState extends State<OrderView> {
                             child: Text(
                               drugData.drugDetail.kond2.isEmpty
                                   ? '-'
-                                  : drugData.drugDetail.kond2,
+                                  : drugData.drugDetail.kond2
+                                      .replaceAll('=', ' = ')
+                                      .replaceAll('-', ' - ')
+                                      .replaceAll('>', ' >'),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: ColorManager.primary,
@@ -183,7 +194,7 @@ class _OrderViewState extends State<OrderView> {
                           ),
                           const SizedBox(height: 8),
                           Container(
-                            width: 154,
+                            width: 158,
                             decoration: BoxDecoration(
                               color: ColorManager.whitePrimaryBackground,
                               borderRadius:
@@ -194,7 +205,10 @@ class _OrderViewState extends State<OrderView> {
                             child: Text(
                               drugData.drugDetail.kond3.isEmpty
                                   ? '-'
-                                  : drugData.drugDetail.kond3,
+                                  : drugData.drugDetail.kond3
+                                      .replaceAll('=', ' = ')
+                                      .replaceAll('-', ' - ')
+                                      .replaceAll('>', ' >'),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: ColorManager.primary,
@@ -275,7 +289,7 @@ class _OrderViewState extends State<OrderView> {
                         Row(
                           children: [
                             Text(
-                              'Rp${orderController.formatBalance(drugData.drugDetail.hrg1Hv)}',
+                              'Rp${orderController.formatBalance(double.parse(drugData.drugDetail.hrg1Hv).round().toString())}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: ColorManager.primary,
@@ -358,7 +372,7 @@ class _OrderViewState extends State<OrderView> {
       children: [
         IconButton(
           onPressed: () {
-            orderController.cartAppBarPressed(context);
+            orderController.cartAppBarPressed(context, refreshCartLength);
           },
           icon: const Icon(
             Icons.shopping_cart_outlined,
@@ -370,21 +384,29 @@ class _OrderViewState extends State<OrderView> {
           Positioned(
             top: 6,
             right: 10,
-            child: Container(
-              alignment: Alignment.center,
-              height: 16,
-              width: 16,
-              decoration: const BoxDecoration(
-                color: ColorManager.negative, // Background color of the badge
-                shape: BoxShape.circle,
+            child: InkWell(
+              onTap: () {
+                orderController.cartAppBarPressed(context, refreshCartLength);
+              },
+              customBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadiusManager.textfieldRadius * 4,
               ),
-              child: Text(
-                orderController.cartLength.toString(),
-                style: const TextStyle(
-                  color: ColorManager.white, // Text color of the badge
-                  fontSize: FontSizeManager.subheadFootnote -
-                      2, // Font size of the badge text
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                alignment: Alignment.center,
+                height: 16,
+                width: 16,
+                decoration: const BoxDecoration(
+                  color: ColorManager.negative, // Background color of the badge
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  orderController.cartLength.toString(),
+                  style: const TextStyle(
+                    color: ColorManager.white, // Text color of the badge
+                    fontSize: FontSizeManager.subheadFootnote -
+                        2, // Font size of the badge text
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

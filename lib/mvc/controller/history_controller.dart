@@ -1,5 +1,6 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/model/history/history_response.dart';
 import 'package:ecommerce_pharmacist_semarang/service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,13 +23,28 @@ class HistoryController {
     if (userCode != null && userCode!.isNotEmpty) {
       await fetchHistory();
     } else {
-      print('User code not found');
+      if (kDebugMode) {
+        print('User code not found');
+      }
     }
   }
 
   String formatDate(String date) {
     DateTime parsedDate = DateTime.parse(date);
     return DateFormat('dd/MM/yyyy').format(parsedDate);
+  }
+
+  String formatDiscountString(String numberStr) {
+    // Parse the string to a double
+    double number = double.parse(numberStr);
+
+    // Check if the number is effectively an integer
+    if (number == number.toInt()) {
+      return number.toInt().toString(); // Convert to integer and then to string
+    } else {
+      return number
+          .toString(); // Use the standard string representation for doubles
+    }
   }
 
   String formatBalance(String balance) {
@@ -93,7 +109,7 @@ class HistoryController {
             orderQty: drug.orderQty,
             bonus: drug.bonus,
             drugPrice: formattedDrugPrice,
-            discount: NumberFormat('##.##').format(double.parse(drug.discount)),
+            discount: drug.discount,
             drugPriceTotal: formattedDrugPriceTotal,
           );
 

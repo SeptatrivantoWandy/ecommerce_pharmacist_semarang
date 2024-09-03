@@ -6,7 +6,7 @@ class AddToCartRequest {
   final String drugMeasure;
   final int drugQty;
   final int bonus;
-  final int drugPrice;
+  final double drugPrice;
   final double discount;
 
   AddToCartRequest({

@@ -2,7 +2,10 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
 class FailureDialog extends StatelessWidget {
-  const FailureDialog({super.key, required this.failureDialogText, required this.failureErrorCode});
+  const FailureDialog(
+      {super.key,
+      required this.failureDialogText,
+      required this.failureErrorCode});
   final String failureDialogText;
   final String failureErrorCode;
 
@@ -26,12 +29,13 @@ class FailureDialog extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             failureDialogText,
+            textAlign: TextAlign.center,
           ),
+          const SizedBox(height: 16),
           Text(
             failureErrorCode,
-            style: const TextStyle(
-              color: ColorManager.negative
-            ),
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: ColorManager.negative),
           ),
         ],
       ),

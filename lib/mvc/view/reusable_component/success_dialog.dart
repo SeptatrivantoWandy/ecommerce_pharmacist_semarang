@@ -27,6 +27,7 @@ class SuccessDialog extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             successDialogText,
+            textAlign: TextAlign.center,
           ),
         ],
       ),

@@ -73,7 +73,9 @@ class _HistoryViewState extends State<HistoryView> {
                     textAlign: TextAlign.center,
                     historyDrugData.drugMeasure,
                     style: const TextStyle(
-                        color: ColorManager.white, fontWeight: FontWeight.bold),
+                      color: ColorManager.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 )
               ],
@@ -113,7 +115,7 @@ class _HistoryViewState extends State<HistoryView> {
                       'Diskon',
                       style: TextStyle(color: Color.fromRGBO(22, 133, 129, 1)),
                     ),
-                    Text('${historyDrugData.discount}%')
+                    Text('${historyController.formatDiscountString(historyDrugData.discount)}%')
                   ],
                 ),
                 Column(
@@ -239,7 +241,8 @@ class _HistoryViewState extends State<HistoryView> {
                             ),
                       borderRadius: BorderRadiusManager.textfieldRadius * 4,
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     child: IntrinsicHeight(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

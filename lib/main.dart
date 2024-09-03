@@ -8,9 +8,7 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 /* =============== Agenda =============== */
 /*
 
-1. Claim point ganti body request tanpa invoiceNumber 
-2. Bagian order tinggal increment decrement function
-3. process order ganti body request tanpa orderNo
+1. History ada problem, tanya aurel
 
 */
 

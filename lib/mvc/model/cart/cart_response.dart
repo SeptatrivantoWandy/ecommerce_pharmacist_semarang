@@ -75,7 +75,7 @@ class CartData {
   final String cartBonus;
   final String cartDrugPrice;
   final String cartDiscount;
-  final DrugData drugData;
+  final CartDetail drugData;
 
   CartData({
     required this.userCode,
@@ -95,26 +95,26 @@ class CartData {
       cartBonus: json['cartBonus'] ?? '',
       cartDrugPrice: json['cartDrugPrice'] ?? '',
       cartDiscount: json['cartDiscount'] ?? '',
-      drugData: DrugData.fromJson(json['drugData']),
+      drugData: CartDetail.fromJson(json['drugData']),
     );
   }
 }
 
-class DrugData {
+class CartDetail {
   final String drugCode;
   final String drugName;
   final String drugImage;
   final DrugDetail drugDetail;
 
-  DrugData({
+  CartDetail({
     required this.drugCode,
     required this.drugName,
     required this.drugImage,
     required this.drugDetail,
   });
 
-  factory DrugData.fromJson(Map<String, dynamic> json) {
-    return DrugData(
+  factory CartDetail.fromJson(Map<String, dynamic> json) {
+    return CartDetail(
       drugCode: json['drugCode'] ?? '',
       drugName: json['drugName'] ?? '',
       drugImage: json['drugImage'] ?? '',

@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 class ClaimPointRequest {
   String userCode;
   String claimDate;
-  String invoiceNumber;
   int totalPoint;
   String bankName;
   String bankAccountNumber;
@@ -12,7 +11,6 @@ class ClaimPointRequest {
   ClaimPointRequest({
     required this.userCode,
     required this.claimDate,
-    required this.invoiceNumber,
     required this.totalPoint,
     required this.bankName,
     required this.bankAccountNumber,
@@ -23,7 +21,6 @@ class ClaimPointRequest {
     return {
       'userCode': userCode,
       'claimDate': claimDate,
-      'invoiceNumber': invoiceNumber,
       'totalPoint': totalPoint,
       'bankName': bankName,
       'bankAccountNumber': bankAccountNumber,
@@ -36,7 +33,6 @@ class ClaimPointRequest {
       print('========== ClaimPointRequest ==========');
       print('UserCode: $userCode');
       print('ClaimDate: $claimDate');
-      print('InvoiceNumber: $invoiceNumber');
       print('TotalPoint: $totalPoint');
       print('BankName: $bankName');
       print('BankAccountNumber: $bankAccountNumber');

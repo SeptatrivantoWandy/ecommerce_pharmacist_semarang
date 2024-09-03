@@ -84,7 +84,6 @@ class ClaimPointController {
     ClaimPointRequest request = ClaimPointRequest(
       userCode: userCode,
       claimDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-      invoiceNumber: "A009224082001",
       totalPoint: int.parse(jumlahKlaimUIController.text.replaceAll('.', '')),
       bankName: namaBankUIController.text,
       bankAccountNumber: nomorRekeningUIController.text,
