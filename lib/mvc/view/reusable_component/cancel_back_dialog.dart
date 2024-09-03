@@ -31,6 +31,7 @@ class CancelBackDialog extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             cancelDialogText,
+            textAlign: TextAlign.center,
           ),
         ],
       ),

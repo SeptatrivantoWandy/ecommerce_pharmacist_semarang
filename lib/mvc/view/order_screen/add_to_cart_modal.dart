@@ -6,6 +6,7 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
 class AddToCartModal {
+
   Widget medicineNameUILabel(DrugData drugData) {
     return Container(
       width: double.infinity,
@@ -58,7 +59,7 @@ class AddToCartModal {
           SizedBox(
             width: 56,
             child: Text(
-              '${orderController.quantityMedicine}',
+              '${orderController.quantityMedicine.round()}',
               textAlign: TextAlign.center,
             ),
           ),
@@ -139,6 +140,8 @@ class AddToCartModal {
                 drugMeasure: drugData.drugDetail.drugMeasure,
                 drugMeasure2: drugData.drugDetail.drugMeasure2,
                 orderController: orderController,
+                drugData: drugData,
+                setState: setState,
               ),
               const SizedBox(height: 16),
               const Text(
@@ -187,7 +190,7 @@ class AddToCartModal {
             Row(
               children: [
                 Text(
-                  'Rp${orderController.formatBalance(orderController.resultDrugPrice.toString())}',
+                  'Rp${orderController.formatBalance(double.parse(orderController.totalPriceMedicine.toStringAsFixed(2)).round().toString())}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: ColorManager.primary,

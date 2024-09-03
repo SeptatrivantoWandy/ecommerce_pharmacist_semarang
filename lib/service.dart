@@ -5,6 +5,8 @@ import 'package:ecommerce_pharmacist_semarang/mvc/model/addtocart/add_to_cart_re
 import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/history/history_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_response.dart';
@@ -13,6 +15,8 @@ import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgnbaru/mlgnbaru_respon
 import 'package:ecommerce_pharmacist_semarang/mvc/model/piutang/piutang_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/drug/drug_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/point/point_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/processorder/process_order_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/processorder/process_order_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -161,39 +165,6 @@ class MlgnBaruService {
   }
 }
 
-class PiutangService {
-  Future<PiutangResponse?> getPiutang(String userCode) async {
-    final url = Uri.parse('$baseUrl/getPiutang.php?userCode=$userCode');
-
-    try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
-
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        return PiutangResponse.fromJson(jsonResponse);
-      } else {
-        String errorMessage =
-            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
-        return PiutangResponse(
-          status: false,
-          message: errorMessage,
-          piutangData: [],
-        );
-      }
-    } catch (e) {
-      // Handle any other exceptions
-      if (kDebugMode) {
-        print('An unexpected error occurred: $e');
-      }
-      return PiutangResponse(
-        status: false,
-        message: 'An unexpected error occurred.',
-        piutangData: [],
-      );
-    }
-  }
-}
-
 class DrugService {
   // Fetch drug data from the server
   Future<DrugResponse?> getDrug() async {
@@ -230,6 +201,153 @@ class DrugService {
   }
 }
 
+class AddToCartService {
+  Future<AddToCartResponse> addToCart(AddToCartRequest request) async {
+    final url = Uri.parse('$baseUrl/addToCart.php');
+
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return AddToCartResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return AddToCartResponse(
+          status: false,
+          exist: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return AddToCartResponse(
+        status: false,
+        exist: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
+class CartService {
+  Future<CartResponse?> getCart(String userCode) async {
+    final url = Uri.parse('$baseUrl/getCart.php?userCode=$userCode');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return CartResponse.fromJson(jsonResponse);
+      } else {
+        // Handle non-200 status codes
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return CartResponse(
+          status: false,
+          message: errorMessage,
+          cartData: [],
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return CartResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+        cartData: [],
+      );
+    }
+  }
+}
+
+class EditOrderService {
+  Future<EditOrderResponse> editOrder(EditOrderRequest request) async {
+    final url = Uri.parse('$baseUrl/editOrder.php');
+    try {
+      final response = await http
+          .put(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(
+                request.toJson()), // Assuming request.toJson() is implemented
+          )
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return EditOrderResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return EditOrderResponse(
+          status: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return EditOrderResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
+class ProcessOrderService {
+  Future<ProcessOrderResponse> processOrder(ProcessOrderRequest request) async {
+    final url = Uri.parse('$baseUrl/processOrder.php');
+
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(
+                request.toJson()), // Assuming request.toJson() is implemented
+          )
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return ProcessOrderResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return ProcessOrderResponse(
+          status: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return ProcessOrderResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
 class HistoryService {
   Future<HistoryResponse?> getHistoryOrder(String userCode) async {
     final url = Uri.parse('$baseUrl//getHistoryOrder.php?userCode=$userCode');
@@ -258,6 +376,39 @@ class HistoryService {
         status: false,
         message: 'An unexpected error occurred.',
         orderHistoryData: [],
+      );
+    }
+  }
+}
+
+class PiutangService {
+  Future<PiutangResponse?> getPiutang(String userCode) async {
+    final url = Uri.parse('$baseUrl/getPiutang.php?userCode=$userCode');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return PiutangResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return PiutangResponse(
+          status: false,
+          message: errorMessage,
+          piutangData: [],
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return PiutangResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+        piutangData: [],
       );
     }
   }
@@ -332,78 +483,6 @@ class ClaimPointService {
       return ClaimPointResponse(
         status: false,
         message: 'An unexpected error occurred.',
-      );
-    }
-  }
-}
-
-class AddToCartService {
-  Future<AddToCartResponse> addToCart(AddToCartRequest request) async {
-    final url = Uri.parse('$baseUrl/addToCart.php');
-
-    try {
-      final response = await http
-          .post(
-            url,
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(request.toJson()),
-          )
-          .timeout(const Duration(seconds: 4));
-
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        return AddToCartResponse.fromJson(jsonResponse);
-      } else {
-        String errorMessage =
-            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
-        return AddToCartResponse(
-          status: false,
-          exist: false,
-          message: errorMessage,
-        );
-      }
-    } catch (e) {
-      // Handle any other exceptions
-      if (kDebugMode) {
-        print('An unexpected error occurred: $e');
-      }
-      return AddToCartResponse(
-        status: false,
-        exist: false,
-        message: 'An unexpected error occurred.',
-      );
-    }
-  }
-}
-
-class CartService {
-  Future<CartResponse?> getCart(String userCode) async {
-    final url = Uri.parse('$baseUrl/getCart.php?userCode=$userCode');
-
-    try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
-      if (response.statusCode == 200) {
-        // Parse the JSON response
-        final Map<String, dynamic> jsonResponse = json.decode(response.body);
-        return CartResponse.fromJson(jsonResponse);
-      } else {
-        // Handle non-200 status codes
-        String errorMessage =
-            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
-        return CartResponse(
-          status: false,
-          message: errorMessage,
-          cartData: [],
-        );
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('An unexpected error occurred: $e');
-      }
-      return CartResponse(
-        status: false,
-        message: 'An unexpected error occurred.',
-        cartData: [],
       );
     }
   }

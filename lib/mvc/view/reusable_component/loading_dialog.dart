@@ -23,6 +23,7 @@ class LoadingDialog extends StatelessWidget {
           SizedBox(height: 12),
           Text(
             'Loading',
+            textAlign: TextAlign.center,
           )
         ],
       ),

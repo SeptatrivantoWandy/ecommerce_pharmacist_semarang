@@ -1,12 +1,12 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/cart_controller.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/cart_screen/cart_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/cart_screen/quantity_button.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/empty_container.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/failure_container.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/loading_container.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -17,6 +17,7 @@ class CartView extends StatefulWidget {
 
 class _CartViewState extends State<CartView> {
   CartController cartController = CartController();
+  CartDialog cartDialog = CartDialog();
 
   late Future<void> futureView;
 
@@ -24,35 +25,30 @@ class _CartViewState extends State<CartView> {
   void initState() {
     super.initState();
     futureView = cartController.viewDidLoad();
-  }
-
-  Future<void> refreshData() async {
-    setState(() {
-      futureView = cartController.viewDidLoad();
+    cartController.scrollController.addListener(() {
+      setState(() {
+        cartController.scrollPercentage =
+            cartController.scrollController.position.pixels;
+      });
     });
   }
 
-  Widget deleteCartUIButton() {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 223, 217),
-        borderRadius: BorderRadiusManager.textfieldRadius,
-      ),
-      height: 34,
-      width: 34,
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(),
-        onPressed: () {},
-        icon: const Icon(
-          Symbols.delete_forever_rounded,
-        ),
-        color: Colors.red,
-      ),
-    );
+  @override
+  void dispose() {
+    // Always dispose the controller to avoid memory leaks
+    cartController.scrollController.dispose();
+    super.dispose();
   }
 
-  Widget cartUICardView(CartData cartData) {
+  Future<void> refreshData() async {
+    if (cartController.debounce == null || !cartController.debounce!.isActive) {
+      setState(() {
+        futureView = cartController.viewDidLoad();
+      });
+    }
+  }
+
+  Widget cartUICardView(CartData cartData, int index) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -123,25 +119,12 @@ class _CartViewState extends State<CartView> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Rp${cartData.cartDrugPrice}',
-                          style: const TextStyle(color: ColorManager.primary),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Row(
-                        children: [
-                          QuantityButton(
-                              initialQuantity: int.parse(cartData.cartQty)),
-                          const SizedBox(width: 8),
-                          deleteCartUIButton()
-                        ],
-                      ),
-                    ],
+                  QuantityButton(
+                    index: index,
+                    cartController: cartController,
+                    cartDialog: cartDialog,
+                    refreshData: refreshData,
+                    setState: setState,
                   ),
                 ],
               ),
@@ -158,10 +141,11 @@ class _CartViewState extends State<CartView> {
       displacement: 0,
       onRefresh: refreshData,
       child: ListView.separated(
+        controller: cartController.scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: cartController.cartDataList!.length,
+        itemCount: cartController.cartDataList.length,
         itemBuilder: (BuildContext context, int index) {
-          return cartUICardView(cartController.cartDataList![index]);
+          return cartUICardView(cartController.cartDataList[index], index);
         },
         separatorBuilder: (BuildContext context, int index) => const SizedBox(
           height: 16,
@@ -175,7 +159,27 @@ class _CartViewState extends State<CartView> {
       height: 34,
       width: double.infinity,
       child: FilledButton(
-        onPressed: () {},
+        onPressed: () async {
+          if (cartController.debounce == null ||
+              !cartController.debounce!.isActive) {
+            if (cartController.isEditSuccess) {
+              cartController.konfirmasiOrderPressed(
+                context,
+                cartDialog,
+              );
+            } else {
+              final bool isEditSuccess = await cartController.editOrder(
+                  context, cartDialog, refreshData);
+              if (isEditSuccess && context.mounted) {
+                BuildContext localContext = context;
+                cartController.konfirmasiOrderPressed(
+                  localContext,
+                  cartDialog,
+                );
+              }
+            }
+          }
+        },
         style: FilledButton.styleFrom(
           backgroundColor: ColorManager.primary,
           foregroundColor: ColorManager.white,
@@ -261,7 +265,8 @@ class _CartViewState extends State<CartView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: futureView, // Assuming you have a `viewDidLoad` method in `cartController`
+      future:
+          futureView, // Assuming you have a `viewDidLoad` method in `cartController`
       builder: (context, snapshot) {
         // Declare variables for body content and bottom navigation bar
         Widget cartViewBody;
@@ -272,8 +277,7 @@ class _CartViewState extends State<CartView> {
           cartViewBody = const LoadingContainer();
           bottomNavigationBar = null; // Hide bottom navigation bar
         } else if (snapshot.connectionState == ConnectionState.done) {
-          if (cartController.cartError != null &&
-              cartController.cartError!.isNotEmpty) {
+          if (cartController.cartError.isNotEmpty) {
             // Show the error state if there's an error message
             cartViewBody = Container(
               margin: PaddingMarginManager.allSuperView,
@@ -284,7 +288,7 @@ class _CartViewState extends State<CartView> {
                     FailureContainer(
                       failureMessage:
                           'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
-                      failureErrorCode: cartController.cartError!,
+                      failureErrorCode: cartController.cartError,
                     ),
                     const SizedBox(height: 16),
                     muatUlangUIButton()
@@ -293,8 +297,7 @@ class _CartViewState extends State<CartView> {
               ),
             );
             bottomNavigationBar = null; // Hide bottom navigation bar
-          } else if (cartController.cartDataList != null &&
-              cartController.cartDataList!.isNotEmpty) {
+          } else if (cartController.cartDataList.isNotEmpty) {
             // Show the success state
             cartViewBody = cartUIListView();
             bottomNavigationBar =
@@ -315,19 +318,31 @@ class _CartViewState extends State<CartView> {
               FailureContainer(
                 failureMessage:
                     'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
-                failureErrorCode: cartController.cartError!,
+                failureErrorCode: cartController.cartError,
               ),
             ],
           );
           bottomNavigationBar = null; // Hide bottom navigation bar
         }
 
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Keranjang Belanja'),
+        return PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) {
+            if (didPop) {
+              return;
+            }
+            if (cartController.debounce == null ||
+                !cartController.debounce!.isActive) {
+              Navigator.of(context).pop();
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Keranjang Belanja'),
+            ),
+            body: cartViewBody,
+            bottomNavigationBar: bottomNavigationBar,
           ),
-          body: cartViewBody,
-          bottomNavigationBar: bottomNavigationBar,
         );
       },
     );

@@ -1,4 +1,5 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/order_controller.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/drug/drug_response.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -6,11 +7,15 @@ class DrugMeasureSegmentedButton extends StatefulWidget {
   final String drugMeasure;
   final String drugMeasure2;
   final OrderController orderController;
+  final DrugData drugData;
+  final StateSetter setState;
 
   const DrugMeasureSegmentedButton({
     required this.drugMeasure,
     required this.drugMeasure2,
     required this.orderController,
+    required this.drugData,
+    required this.setState,
     super.key,
   });
 
@@ -21,7 +26,6 @@ class DrugMeasureSegmentedButton extends StatefulWidget {
 
 class _DrugMeasureSegmentedButtonState
     extends State<DrugMeasureSegmentedButton> {
-  
   int selectedIndex = 0;
 
   @override
@@ -86,7 +90,9 @@ class _DrugMeasureSegmentedButtonState
                   ),
                   onTap: () {
                     widget.orderController.drugMeasure = measures[index];
-                    setState(() {
+                    widget.setState(() {
+                      widget.orderController.drugMeasureSegmentedButtonChanged(
+                          index, widget.drugData);
                       selectedIndex = index;
                     });
                   },
