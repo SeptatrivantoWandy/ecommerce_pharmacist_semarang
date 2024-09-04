@@ -214,7 +214,7 @@ class OrderController {
       priceMedicine = double.parse(drugData.drugDetail.hrg2Hv);
     }
 
-    print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100))');
+    // print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100))');
 
     totalPriceMedicine = (priceMedicine * quantityMedicine) - ((priceMedicine * quantityMedicine) * (finalDisc / 100));
   }
@@ -280,7 +280,7 @@ class OrderController {
     priceFormula();
 
     totalPriceMedicine = (priceMedicine * quantityMedicine) - ((priceMedicine * quantityMedicine) * (finalDisc / 100));
-    print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100)) = $totalPriceMedicine');
+    // print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100)) = $totalPriceMedicine');
   }
 
   void decrementQuantity(DrugData drugData) {
@@ -295,16 +295,17 @@ class OrderController {
     String drugCode,
     OrderDialog orderDialog,
   ) async {
+    priceFormula();
     AddToCartService service = AddToCartService();
-
     AddToCartRequest request = AddToCartRequest(
       userCode: userCode!,
       drugCode: drugCode,
       drugMeasure: drugMeasure,
       drugQty: quantityMedicine.round(),
       bonus: finalBonus,
-      drugPrice: totalPriceMedicine,
-      discount: finalDisc,
+      drugPrice: priceMedicine,
+      drugPriceTotal: totalPriceMedicine,
+      discount: finalDisc, 
     );
 
     // request.printAddToCartRequest();

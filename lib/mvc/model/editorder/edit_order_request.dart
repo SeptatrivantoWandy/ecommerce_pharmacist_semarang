@@ -27,6 +27,7 @@ class EditOrderRequest {
         print('Drug Quantity: ${item.drugQty}');
         print('Bonus: ${item.bonus}');
         print('Drug Price: ${item.drugPrice}');
+        print('Drug Price Total: ${item.drugPriceTotal}');
         print('Discount: ${item.discount}');
       }
     }
@@ -39,6 +40,7 @@ class EditedCartData {
   final int drugQty;
   final int bonus;
   final double drugPrice;
+  final double drugPriceTotal;
   final double discount;
 
   EditedCartData({
@@ -47,6 +49,7 @@ class EditedCartData {
     required this.drugQty,
     required this.bonus,
     required this.drugPrice,
+    required this.drugPriceTotal,
     required this.discount,
   });
 
@@ -57,6 +60,7 @@ class EditedCartData {
       'drugQty': drugQty,
       'bonus': bonus,
       'drugPrice': drugPrice,
+      'drugPriceTotal': drugPriceTotal,
       'discount': discount,
     };
   }

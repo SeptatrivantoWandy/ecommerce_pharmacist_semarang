@@ -7,6 +7,7 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/failur
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/loading_container.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -40,12 +41,33 @@ class _CartViewState extends State<CartView> {
     super.dispose();
   }
 
-  Future<void> refreshData() async {
+  Future<bool> refreshData() async {
     if (cartController.debounce == null || !cartController.debounce!.isActive) {
-      setState(() {
-        futureView = cartController.viewDidLoad();
-      });
+      if (cartController.isEditSuccess == 'isSuccess') {
+        setState(() {
+          futureView = cartController.viewDidLoad();
+        });
+        return true;
+      } else {
+        bool isEditSuccess = false;
+        if (context.mounted) {
+          BuildContext localContext = context;
+          isEditSuccess = await cartController.editOrder(
+            localContext,
+            cartDialog,
+            refreshData,
+            setState,
+          );
+        }
+        if (isEditSuccess) {
+          setState(() {
+            futureView = cartController.viewDidLoad();
+          });
+          return true;
+        }
+      }
     }
+    return false;
   }
 
   Widget cartUICardView(CartData cartData, int index) {
@@ -159,27 +181,31 @@ class _CartViewState extends State<CartView> {
       height: 34,
       width: double.infinity,
       child: FilledButton(
-        onPressed: () async {
-          if (cartController.debounce == null ||
-              !cartController.debounce!.isActive) {
-            if (cartController.isEditSuccess) {
-              cartController.konfirmasiOrderPressed(
-                context,
-                cartDialog,
-              );
-            } else {
-              final bool isEditSuccess = await cartController.editOrder(
-                  context, cartDialog, refreshData);
-              if (isEditSuccess && context.mounted) {
-                BuildContext localContext = context;
-                cartController.konfirmasiOrderPressed(
-                  localContext,
-                  cartDialog,
-                );
+        onPressed: cartController.debounce != null &&
+                !cartController.debounce!.isActive
+            ? () async {
+                if (cartController.isEditSuccess == 'isSuccess') {
+                  cartController.konfirmasiOrderPressed(
+                    context,
+                    cartDialog,
+                  );
+                } else {
+                  final bool isEditSuccess = await cartController.editOrder(
+                    context,
+                    cartDialog,
+                    refreshData,
+                    setState,
+                  );
+                  if (isEditSuccess && context.mounted) {
+                    BuildContext localContext = context;
+                    cartController.konfirmasiOrderPressed(
+                      localContext,
+                      cartDialog,
+                    );
+                  }
+                }
               }
-            }
-          }
-        },
+            : null,
         style: FilledButton.styleFrom(
           backgroundColor: ColorManager.primary,
           foregroundColor: ColorManager.white,
@@ -213,14 +239,32 @@ class _CartViewState extends State<CartView> {
                       fontSize: FontSizeManager.title2,
                       fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  'Rp${cartController.totalCartValue}',
-                  style: const TextStyle(
-                    fontSize: FontSizeManager.title2,
-                    fontWeight: FontWeight.bold,
-                    color: ColorManager.primary,
-                  ),
-                ),
+                cartController.debounce != null &&
+                        !cartController.debounce!.isActive
+                    ? Text(
+                        'Rp${cartController.isEditSuccess == 'isSuccess' ? cartController.totalCartValue : '-1'}',
+                        style: TextStyle(
+                          fontSize: FontSizeManager.title2,
+                          fontWeight: FontWeight.bold,
+                          color: cartController.debounce != null &&
+                                  !cartController.debounce!.isActive &&
+                                  cartController.isEditSuccess == 'isSuccess'
+                              ? ColorManager.primary
+                              : ColorManager.negative,
+                        ),
+                      )
+                    : Shimmer.fromColors(
+                        baseColor: ColorManager.disabledBackground,
+                        highlightColor: const Color.fromARGB(0, 0, 0, 0),
+                        child: Container(
+                          width: 118.0,
+                          height: 26.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadiusManager.textfieldRadius,
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),
