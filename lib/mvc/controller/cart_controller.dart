@@ -23,7 +23,7 @@ class CartController {
   String totalCartValue = '';
 
   Timer? debounce;
-  bool isEditSuccess = false;
+  String isEditSuccess = 'isLoading';
 
   ScrollController scrollController = ScrollController();
   double scrollPercentage = 0.0;
@@ -33,17 +33,19 @@ class CartController {
     userCode = prefs.getString('userCode')!;
   }
 
-  Future<void> viewDidLoad() async {
+  Future<bool> viewDidLoad() async {
     // Wait for user data to be loaded first
     await loadUserData();
 
     // Then fetch Piutang data after user data is loaded
     if (userCode.isNotEmpty) {
-      await fetchCart();
+      final bool isSuccessFetchCart = await fetchCart();
+      return isSuccessFetchCart;
     } else {
       if (kDebugMode) {
         print('User code not found');
       }
+      return false;
     }
   }
 
@@ -57,7 +59,19 @@ class CartController {
     return currencyFormat.format(parsedBalance);
   }
 
-  Future<void> fetchCart() async {
+  double calculateDrugPriceTotal(
+      double priceMedicine, int quantityMedicine, double finalDisc) {
+    final double totalPriceMedicine = (priceMedicine * quantityMedicine) -
+        ((priceMedicine * quantityMedicine) * (finalDisc / 100));
+
+    // print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100)) = $totalPriceMedicine');
+
+    return totalPriceMedicine;
+  }
+
+  Future<bool> fetchCart() async {
+    isEditSuccess = 'isLoading';
+
     // Create an instance of CartService
     CartService cartService = CartService();
 
@@ -83,7 +97,10 @@ class CartController {
 
     if (response != null && response.status) {
       // If the response is successful
+      isEditSuccess = 'isSuccess';
       cartError = '';
+
+      // response.printCartResponse();
 
       // Initialize a list to store formatted CartData
       List<CartData> formattedCartDataList = [];
@@ -93,10 +110,20 @@ class CartController {
       // Iterate through the response data and format the values
       for (var cartItem in response.cartData) {
         // Format the cart price and calculate the total
-        double cartPriceValue = double.parse(cartItem.cartDrugPrice);
+        
+        // print('---------');
+        
+        double cartPriceValue = calculateDrugPriceTotal(
+          double.parse(cartItem.cartDrugPrice),
+          int.parse(cartItem.cartQty),
+          double.parse(cartItem.cartDiscount),
+        );
 
         // print(cartItem.cartDrugPrice);
         // response.printCartResponse();
+
+        // response.printCartResponse();
+
 
         totalCartPrice += cartPriceValue;
 
@@ -133,24 +160,33 @@ class CartController {
           drugQty: int.parse(cartItem.cartQty),
           bonus: int.parse(cartItem.cartBonus),
           drugPrice: double.parse(cartItem.cartDrugPrice),
-          discount: double.parse(cartItem.drugData.drugDetail.bonus1),
+          discount: double.parse(cartItem.cartDiscount),
+          drugPriceTotal: calculateDrugPriceTotal(
+            double.parse(cartItem.cartDrugPrice),
+            int.parse(cartItem.cartQty),
+            double.parse(cartItem.cartDiscount),
+          ),
         );
         editedCartDataList.add(initiatedCartData);
       }
+
+      return true;
     } else {
       // If there was an error fetching the data, store the error message
+      isEditSuccess = 'isFailure';
       cartError = response?.message ?? 'Failed to fetch cart data';
+      return false;
     }
   }
 
   Future<void> deleteItemPressed(
-      BuildContext context,
-      CartData deleteCartData,
-      CartDialog cartDialog,
-      int index,
-      VoidCallback refreshData,
-      StateSetter setState,
-      VoidCallback setInitialData) async {
+    BuildContext context,
+    CartData deleteCartData,
+    CartDialog cartDialog,
+    int index,
+    VoidCallback refreshData,
+    StateSetter setState,
+  ) async {
     if (debounce == null || !debounce!.isActive) {
       final bool isAgree =
           await cartDialog.confirmDeleteItemAlertDialog(context);
@@ -160,7 +196,7 @@ class CartController {
 
         if (context.mounted) {
           final bool isSuccess =
-              await editOrder(context, cartDialog, refreshData);
+              await editOrder(context, cartDialog, refreshData, setState);
           if (!isSuccess) {
             EditedCartData undoEditedDelete = EditedCartData(
               drugCode: deleteCartData.drugData.drugCode,
@@ -169,6 +205,11 @@ class CartController {
               bonus: int.parse(deleteCartData.cartBonus),
               drugPrice: double.parse(deleteCartData.cartDrugPrice),
               discount: double.parse(deleteCartData.cartDiscount),
+              drugPriceTotal: calculateDrugPriceTotal(
+                double.parse(deleteCartData.cartDrugPrice),
+                int.parse(deleteCartData.cartQty),
+                double.parse(deleteCartData.cartDiscount),
+              ),
             );
             editedCartDataList.insert(index, undoEditedDelete);
 
@@ -182,7 +223,10 @@ class CartController {
               drugData: deleteCartData.drugData,
             );
             cartDataList.insert(index, undoDelete);
-          } else {}
+            setState(() {});
+          } else {
+            refreshData();
+          }
         }
       }
     }
@@ -198,16 +242,20 @@ class CartController {
     final completer = Completer<bool>();
 
     debounce = Timer(const Duration(seconds: 1), () async {
-      final bool isSuccess = await editOrder(context, cartDialog, refreshData);
+      final bool isSuccess =
+          await editOrder(context, cartDialog, refreshData, setState);
       completer.complete(isSuccess); // Complete the future after the timer
     });
 
     return completer.future;
   }
 
-  Future<bool> editOrder(BuildContext context, CartDialog cartDialog,
-      VoidCallback refreshData) async {
-    // editedCartDataList = [];
+  Future<bool> editOrder(
+    BuildContext context,
+    CartDialog cartDialog,
+    VoidCallback refreshData,
+    StateSetter setState,
+  ) async {
     cartDialog.loadingAlertDialog(context);
     editCartError = '';
 
@@ -226,15 +274,25 @@ class CartController {
       // await Future.delayed(const Duration(seconds: 2));
 
       if (response.status) {
-        // refreshData();
-        if (context.mounted) {
-          Navigator.of(context).pop();
+        isEditSuccess = 'isSuccess';
+
+        try {
+          bool isSuccessRefresh = await viewDidLoad();
+          if (isSuccessRefresh && context.mounted) {
+            Navigator.of(context).pop();
+            setState(() {});
+            return isSuccessRefresh;
+          } else {
+            return false;
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print('error');
+          }
+          return false;
         }
-        refreshData();
-        isEditSuccess = true;
-        return response.status;
       } else {
-        isEditSuccess = false;
+        isEditSuccess = 'isFailure';
         editCartError = response.message;
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -244,6 +302,7 @@ class CartController {
             editCartError,
           );
         }
+        setState(() {});
         return response.status;
       }
     } catch (e) {

@@ -7,6 +7,7 @@ class AddToCartRequest {
   final int drugQty;
   final int bonus;
   final double drugPrice;
+  final double drugPriceTotal;
   final double discount;
 
   AddToCartRequest({
@@ -16,6 +17,7 @@ class AddToCartRequest {
     required this.drugQty,
     required this.bonus,
     required this.drugPrice,
+    required this.drugPriceTotal,
     required this.discount,
   });
 
@@ -28,6 +30,7 @@ class AddToCartRequest {
       'drugQty': drugQty,
       'bonus': bonus,
       'drugPrice': drugPrice,
+      'drugPriceTotal': drugPriceTotal,
       'discount': discount,
     };
   }
@@ -42,6 +45,7 @@ class AddToCartRequest {
       print('Drug Quantity: $drugQty');
       print('Bonus: $bonus');
       print('Drug Price: $drugPrice');
+      print('Drug Price Total: $drugPriceTotal');
       print('Discount: $discount');
     }
   }

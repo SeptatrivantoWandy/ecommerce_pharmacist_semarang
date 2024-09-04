@@ -106,12 +106,14 @@ class _QuantityButtonState extends State<QuantityButton> {
 
     if (widget.cartController.debounce == null) {
       EditedCartData newEditedCartData = EditedCartData(
-          drugCode: drugCode,
-          drugMeasure: drugMeasure,
-          drugQty: quantityMedicine.round(),
-          bonus: finalBonus,
-          drugPrice: totalPriceMedicine,
-          discount: finalDisc);
+        drugCode: drugCode,
+        drugMeasure: drugMeasure,
+        drugQty: quantityMedicine.round(),
+        bonus: finalBonus,
+        drugPrice: priceMedicine,
+        drugPriceTotal: totalPriceMedicine,
+        discount: finalDisc,
+      );
 
       int selectedIndex = widget.cartController.editedCartDataList.indexWhere(
           (item) =>
@@ -191,6 +193,7 @@ class _QuantityButtonState extends State<QuantityButton> {
 
   Future<void> incrementQuantity() async {
     widget.setState(() {
+      widget.cartController.isEditSuccess = 'isLoading';
       quantityMedicine++;
       priceFormula();
 
@@ -202,12 +205,14 @@ class _QuantityButtonState extends State<QuantityButton> {
     });
 
     EditedCartData newEditedCartData = EditedCartData(
-        drugCode: drugCode,
-        drugMeasure: drugMeasure,
-        drugQty: quantityMedicine.round(),
-        bonus: finalBonus,
-        drugPrice: totalPriceMedicine,
-        discount: finalDisc);
+      drugCode: drugCode,
+      drugMeasure: drugMeasure,
+      drugQty: quantityMedicine.round(),
+      bonus: finalBonus,
+      drugPrice: priceMedicine,
+      discount: finalDisc,
+      drugPriceTotal: totalPriceMedicine,
+    );
 
     int selectedIndex = widget.cartController.editedCartDataList.indexWhere(
         (item) =>
@@ -223,16 +228,13 @@ class _QuantityButtonState extends State<QuantityButton> {
         widget.refreshData,
         widget.setState);
     if (!isSuccess) {
-      widget.setState(() {
-        setInitialData();
-      });
-
-      // widget.refreshData;
+      widget.setState(() {});
     }
   }
 
   Future<void> decrementQuantity() async {
     widget.setState(() {
+      widget.cartController.isEditSuccess = 'isLoading';
       quantityMedicine--;
       priceFormula();
 
@@ -241,12 +243,14 @@ class _QuantityButtonState extends State<QuantityButton> {
     });
 
     EditedCartData newEditedCartData = EditedCartData(
-        drugCode: drugCode,
-        drugMeasure: drugMeasure,
-        drugQty: quantityMedicine.round(),
-        bonus: finalBonus,
-        drugPrice: totalPriceMedicine,
-        discount: finalDisc);
+      drugCode: drugCode,
+      drugMeasure: drugMeasure,
+      drugQty: quantityMedicine.round(),
+      bonus: finalBonus,
+      drugPrice: priceMedicine,
+      discount: finalDisc,
+      drugPriceTotal: totalPriceMedicine,
+    );
 
     int selectedIndex = widget.cartController.editedCartDataList.indexWhere(
         (item) =>
@@ -262,17 +266,17 @@ class _QuantityButtonState extends State<QuantityButton> {
         widget.refreshData,
         widget.setState);
     if (!isSuccess) {
-      widget.setState(() {
-        setInitialData();
-      });
-      // widget.refreshData;
+      widget.setState(() {});
     }
   }
 
   Widget deleteCartUIButton(CartData cartData, int index) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 223, 217),
+        color: widget.cartController.debounce != null &&
+                !widget.cartController.debounce!.isActive
+            ? const Color.fromARGB(255, 255, 223, 217)
+            : ColorManager.disabledBackground,
         borderRadius: BorderRadiusManager.textfieldRadius,
       ),
       height: 34,
@@ -280,18 +284,23 @@ class _QuantityButtonState extends State<QuantityButton> {
       child: IconButton(
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints(),
-        onPressed: () async {
-          await widget.cartController
-              .deleteItemPressed(context, cartData, widget.cartDialog, index,
-                  widget.refreshData, widget.setState, setInitialData)
-              .then((_) {
-            widget.refreshData();
-          });
-        },
+        onPressed: widget.cartController.debounce != null &&
+                !widget.cartController.debounce!.isActive
+            ? () async {
+                await widget.cartController.deleteItemPressed(
+                  context,
+                  cartData,
+                  widget.cartDialog,
+                  index,
+                  widget.refreshData,
+                  widget.setState,
+                );
+              }
+            : null,
         icon: const Icon(
           Symbols.delete_forever_rounded,
         ),
-        color: Colors.red,
+        color: ColorManager.negative,
       ),
     );
   }
