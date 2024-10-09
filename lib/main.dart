@@ -10,6 +10,7 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 
 UI yg perlu di perbaiki
 1. KondisUI di orderView kurang panjang
+2. test commit
 
 */
 
