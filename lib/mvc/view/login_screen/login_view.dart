@@ -33,7 +33,7 @@ class _LoginViewState extends State<LoginView> {
           Container(
             margin: PaddingMarginManager.horizontallySuperView,
             child: const Text(
-              'PBF Apps',
+              'SMS Apps',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: FontSizeManager.title1,
@@ -261,7 +261,7 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        height: BottomAppBarManager.regular + 26,
+        height: BottomAppBarManager.regular + 28,
         child: Column(
           children: [
             loginUIButton(),

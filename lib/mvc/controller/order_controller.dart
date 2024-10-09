@@ -214,9 +214,10 @@ class OrderController {
       priceMedicine = double.parse(drugData.drugDetail.hrg2Hv);
     }
 
-    // print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100))');
+    priceFormula();
 
     totalPriceMedicine = (priceMedicine * quantityMedicine) - ((priceMedicine * quantityMedicine) * (finalDisc / 100));
+    // print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100)) = $totalPriceMedicine');
   }
 
   void priceFormula() {

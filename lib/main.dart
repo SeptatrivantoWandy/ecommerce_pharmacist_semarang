@@ -8,7 +8,8 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 /* =============== Agenda =============== */
 /*
 
-1. History ada problem, tanya aurel
+UI yg perlu di perbaiki
+1. KondisUI di orderView kurang panjang
 
 */
 

@@ -276,12 +276,12 @@ class _OrderViewState extends State<OrderView> {
                           children: [
                             Icon(
                               Icons.sell_rounded,
-                              size: 18,
+                              size: 16,
                               color: ColorManager.primary,
                             ),
                             SizedBox(width: 4),
                             Text(
-                              'HARGA',
+                              'HNA',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             )
                           ],

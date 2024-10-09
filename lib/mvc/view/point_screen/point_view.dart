@@ -34,7 +34,6 @@ class _PointViewState extends State<PointView> {
     return Container(
       margin: const EdgeInsets.only(right: 16),
       height: 34,
-      width: 84,
       child: FilledButton(
         onPressed: () async {
           final result = await pointController.klaimPointPressed(context);
@@ -43,7 +42,7 @@ class _PointViewState extends State<PointView> {
           }
         },
         style: FilledButton.styleFrom(
-          padding: EdgeInsets.zero,
+          padding: PaddingMarginManager.miniHorizontallySuperView,
           backgroundColor: ColorManager.primary,
           foregroundColor: ColorManager.white,
           shape: RoundedRectangleBorder(
@@ -51,6 +50,7 @@ class _PointViewState extends State<PointView> {
           ),
         ),
         child: const Text(
+          textAlign: TextAlign.center,
           'Klaim Point',
           style: TextStyle(
               fontWeight: FontWeight.bold,

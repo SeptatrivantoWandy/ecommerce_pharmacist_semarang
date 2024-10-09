@@ -122,7 +122,7 @@ class _CartViewState extends State<CartView> {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        width: 54,
+                        width: 64,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 6,
                         ),
@@ -226,7 +226,7 @@ class _CartViewState extends State<CartView> {
   Widget bottomNavigationUIContainer() {
     return BottomAppBar(
       color: ColorManager.backgroundPage,
-      height: 136,
+      height: 142,
       child: Column(
         children: [
           IntrinsicHeight(
