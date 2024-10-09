@@ -187,7 +187,7 @@ class _PiutangViewState extends State<PiutangView> {
   Widget bottomNavigationUIContainer() {
     return BottomAppBar(
       color: ColorManager.backgroundPage,
-      height: 60,
+      height: 62,
       child: Column(
         children: [
           IntrinsicHeight(

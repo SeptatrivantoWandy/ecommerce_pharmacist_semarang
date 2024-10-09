@@ -115,7 +115,8 @@ class _HistoryViewState extends State<HistoryView> {
                       'Diskon',
                       style: TextStyle(color: Color.fromRGBO(22, 133, 129, 1)),
                     ),
-                    Text('${historyController.formatDiscountString(historyDrugData.discount)}%')
+                    Text(
+                        '${historyController.formatDiscountString(historyDrugData.discount)}%')
                   ],
                 ),
                 Column(
@@ -170,61 +171,28 @@ class _HistoryViewState extends State<HistoryView> {
             child: IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.calendar_month_rounded,
-                              color: ColorManager.primary,
+                  Expanded(
+                    child: IntrinsicHeight(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_month_rounded,
+                            color: ColorManager.primary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            historyData.orderDate,
+                            style: const TextStyle(
+                              color: ColorManager.subheadFootnote,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              historyData.orderDate,
-                              style: const TextStyle(
-                                color: ColorManager.subheadFootnote,
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            const Text(
-                              'Nomor Order',
-                              style: TextStyle(
-                                  color: Color.fromRGBO(22, 133, 129, 1),
-                                  fontSize: FontSizeManager.subheadFootnote),
-                            ),
-                            const SizedBox(width: 4),
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: ColorManager.subheadFootnote,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '#${historyData.orderNo}',
-                              style: const TextStyle(
-                                  color: ColorManager.subheadFootnote,
-                                  fontSize: FontSizeManager.subheadFootnote),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                    ),
                   ),
                   Container(
-                    width: 118,
+                    width: 126,
                     decoration: BoxDecoration(
                       gradient: historyData.orderStatus != ''
                           ? const LinearGradient(
@@ -252,6 +220,7 @@ class _HistoryViewState extends State<HistoryView> {
                                 ? Icons.check_circle_outline_rounded
                                 : Icons.schedule,
                             color: ColorManager.white,
+                            size: 16,
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -260,11 +229,43 @@ class _HistoryViewState extends State<HistoryView> {
                                 : 'Menunggu',
                             style: const TextStyle(
                                 color: ColorManager.white,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                                ),
                           )
                         ],
                       ),
                     ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            margin: PaddingMarginManager.miniHorizontallySuperView,
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  const Text(
+                    'Nomor Order',
+                    style: TextStyle(
+                        color: Color.fromRGBO(22, 133, 129, 1),
+                        fontSize: FontSizeManager.subheadFootnote),
+                  ),
+                  const SizedBox(width: 4),
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: ColorManager.subheadFootnote,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '#${historyData.orderNo}',
+                    style: const TextStyle(
+                        color: ColorManager.subheadFootnote,
+                        fontSize: FontSizeManager.subheadFootnote),
                   ),
                 ],
               ),

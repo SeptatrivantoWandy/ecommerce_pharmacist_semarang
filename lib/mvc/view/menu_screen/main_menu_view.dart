@@ -261,7 +261,7 @@ class _MenuViewState extends State<MainMenuView> {
       appBar: AppBar(
         backgroundColor: ColorManager.primary,
         title: const Text(
-          'PBF Apps',
+          'SMS Apps',
           style: TextStyle(
             color: ColorManager.white,
             fontSize: FontSizeManager.title1,
