@@ -346,7 +346,7 @@ class _QuantityButtonState extends State<QuantityButton> {
           ),
           Container(
             decoration: BoxDecoration(
-              color: ColorManager.greyPrimaryBackground,
+              color: ColorManager.whitePrimaryBackground,
               borderRadius: BorderRadiusManager.textfieldRadius,
             ),
             height: 34,

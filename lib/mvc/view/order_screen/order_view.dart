@@ -63,7 +63,7 @@ class _OrderViewState extends State<OrderView> {
           hintText: "Cari Obat",
           prefixIcon: const Icon(
             Icons.search_rounded,
-            size: 26,
+            size: 24,
             color: ColorManager.primary,
           ),
           prefixIconConstraints: const BoxConstraints(
@@ -137,7 +137,13 @@ class _OrderViewState extends State<OrderView> {
                                 if (loadingProgress == null) {
                                   return child; // Image is fully loaded
                                 } else {
-                                  return const CircularProgressIndicator();
+                                  return const Center(
+                                    child: SizedBox(
+                                      height: 72,
+                                      width: 72,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
                                 }
                               },
                             ),
@@ -148,9 +154,9 @@ class _OrderViewState extends State<OrderView> {
                       Column(
                         children: [
                           Container(
-                            width: 158,
+                            width: 175,
                             decoration: BoxDecoration(
-                              color: ColorManager.whitePrimaryBackground,
+                              color: ColorManager.primary,
                               borderRadius:
                                   BorderRadiusManager.textfieldRadius * 4,
                             ),
@@ -159,21 +165,20 @@ class _OrderViewState extends State<OrderView> {
                             child: Text(
                               drugData.drugDetail.kond1.isEmpty
                                   ? '-'
-                                  : drugData.drugDetail.kond1
-                                      .replaceAll('=', ' = ')
-                                      .replaceAll('-', ' - ')
-                                      .replaceAll('>', ' >'),
+                                  : orderController.reformatCondition(
+                                      drugData.drugDetail.kond1),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                color: ColorManager.primary,
+                                color: ColorManager.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                           const SizedBox(height: 8),
                           Container(
-                            width: 158,
+                            width: 175,
                             decoration: BoxDecoration(
-                              color: ColorManager.whitePrimaryBackground,
+                              color: ColorManager.primary,
                               borderRadius:
                                   BorderRadiusManager.textfieldRadius * 4,
                             ),
@@ -182,21 +187,20 @@ class _OrderViewState extends State<OrderView> {
                             child: Text(
                               drugData.drugDetail.kond2.isEmpty
                                   ? '-'
-                                  : drugData.drugDetail.kond2
-                                      .replaceAll('=', ' = ')
-                                      .replaceAll('-', ' - ')
-                                      .replaceAll('>', ' >'),
+                                  : orderController.reformatCondition(
+                                      drugData.drugDetail.kond2),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                color: ColorManager.primary,
+                                color: ColorManager.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                           const SizedBox(height: 8),
                           Container(
-                            width: 158,
+                            width: 175,
                             decoration: BoxDecoration(
-                              color: ColorManager.whitePrimaryBackground,
+                              color: ColorManager.primary,
                               borderRadius:
                                   BorderRadiusManager.textfieldRadius * 4,
                             ),
@@ -205,13 +209,12 @@ class _OrderViewState extends State<OrderView> {
                             child: Text(
                               drugData.drugDetail.kond3.isEmpty
                                   ? '-'
-                                  : drugData.drugDetail.kond3
-                                      .replaceAll('=', ' = ')
-                                      .replaceAll('-', ' - ')
-                                      .replaceAll('>', ' >'),
+                                  : orderController.reformatCondition(
+                                      drugData.drugDetail.kond3),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                color: ColorManager.primary,
+                                color: ColorManager.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           )

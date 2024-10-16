@@ -177,7 +177,7 @@ class AddToCartModal {
               children: [
                 Icon(
                   Icons.sell_rounded,
-                  size: 18,
+                  size: 16,
                   color: ColorManager.primary,
                 ),
                 SizedBox(width: 4),
@@ -270,6 +270,7 @@ class AddToCartModal {
   ) {
     orderController.initAddToCartModal(drugData);
     showModalBottomSheet(
+      backgroundColor: ColorManager.backgroundPage,
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
@@ -314,7 +315,6 @@ class AddToCartModal {
                           },
                           icon: Icon(
                             Icons.cancel,
-                            // size: 32,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                         ),

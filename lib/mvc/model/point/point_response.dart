@@ -17,7 +17,7 @@ class PointResponse {
     return PointResponse(
       status: json['status'],
       message: json['message'],
-      totalPointNow: json['totalPointNow'],
+      totalPointNow: json['totalPointNow'] ?? '0',
       saldoPointData: List<SaldoPointData>.from(
         json['saldoPointData'].map((data) => SaldoPointData.fromJson(data)),
       ),

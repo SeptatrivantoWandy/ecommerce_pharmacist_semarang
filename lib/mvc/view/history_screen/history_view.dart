@@ -47,10 +47,13 @@ class _HistoryViewState extends State<HistoryView> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Iconify(
-                  Ri.medicine_bottle_fill,
-                  size: 20,
-                  color: ColorManager.primary,
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: const Iconify(
+                    Ri.medicine_bottle_fill,
+                    size: 16,
+                    color: ColorManager.primary,
+                  ),
                 ),
                 const SizedBox(width: 6),
                 Expanded(
@@ -179,6 +182,7 @@ class _HistoryViewState extends State<HistoryView> {
                           const Icon(
                             Icons.calendar_month_rounded,
                             color: ColorManager.primary,
+                            size: 16,
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -287,7 +291,7 @@ class _HistoryViewState extends State<HistoryView> {
                     children: [
                       Icon(
                         Icons.payments_outlined,
-                        size: 20,
+                        size: 16,
                         color: ColorManager.white,
                       ),
                       SizedBox(width: 6),

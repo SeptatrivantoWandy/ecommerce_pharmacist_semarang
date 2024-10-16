@@ -18,7 +18,7 @@ class _AuthViewState extends State<AuthView> {
   late Future<bool> loginCheckFuture;
 
   Future<bool> checkIfLoggedIn() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     final SharedPreferences prefs = await futurePrefs;
     var isAuth = prefs.getString('username');
     if (isAuth != null && isAuth.isNotEmpty && isAuth != '') {

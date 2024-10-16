@@ -1,10 +1,8 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/main_menu_controller.dart';
-import 'package:ecommerce_pharmacist_semarang/mvc/view/menu_screen/main_menu_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/settings_screen/settting_view.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/fa6_solid.dart';
 
 class MainMenuView extends StatefulWidget {
   const MainMenuView({super.key});
@@ -14,82 +12,20 @@ class MainMenuView extends StatefulWidget {
 }
 
 class _MenuViewState extends State<MainMenuView> {
-  final MainMenuDialog menuDialog = MainMenuDialog();
   final MainMenuController mainMenuController = MainMenuController();
 
-  Widget logoutUIButton() {
-    return Stack(
-      children: [
-        Container(
-            decoration: BoxDecoration(
-              color: ColorManager.primary,
-              borderRadius: BorderRadius.only(
-                bottomLeft: BorderRadiusManager.dottedTextFieldRadius * 4,
-                bottomRight: BorderRadiusManager.dottedTextFieldRadius * 4,
-              ),
-            ),
-            padding: const EdgeInsets.only(bottom: 64)),
-        Container(
-          margin: const EdgeInsets.only(top: 16, right: 16, left: 16),
-          decoration: BoxDecoration(
-            color: ColorManager.white,
-            borderRadius: BorderRadiusManager.textfieldRadius,
-          ),
-          child: Column(
-            children: [
-              Container(
-                margin: PaddingMarginManager.allSuperView,
-                child: const Text(
-                  'Silahkan pilih menu yang tersedia pada aplikasi',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              noMarginSeparatorWidget(),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusManager.textfieldRadius,
-                  ),
-                  onTap: () {
-                    menuDialog.logoutAlertDialog(context, mainMenuController);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                        left: 12, right: 16, top: 4, bottom: 4),
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.power_settings_new_rounded,
-                          color: Colors.red,
-                          size: 26,
-                        ),
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            'Ingin keluar dari akun aplikasi (logout)?',
-                            style: TextStyle(
-                                fontSize: FontSizeManager.subheadFootnote),
-                          ),
-                        ),
-                        Text(
-                          'Keluar',
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: FontSizeManager.subheadFootnote),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+  @override
+  void initState() {
+    super.initState();
+    mainMenuController.viewDidLoad(setState);
+  }
+
+  Widget logoUIImage() {
+    return Container(
+      margin: PaddingMarginManager.horizontallySuperView,
+      child: Image.asset(
+        'assets/semesta_megah_sentosa_logo.png',
+      ),
     );
   }
 
@@ -118,15 +54,13 @@ class _MenuViewState extends State<MainMenuView> {
                   child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(14),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: ColorManager.greyPrimaryBackground,
                           borderRadius: BorderRadiusManager.textfieldRadius * 2,
                         ),
-                        child: const Icon(
-                          Icons.article_outlined,
-                          size: 48,
-                          color: Color.fromRGBO(49, 98, 191, 1),
+                        child: Image.asset(
+                          'assets/order_pesanan_logo.png',
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -154,15 +88,13 @@ class _MenuViewState extends State<MainMenuView> {
                   child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(14),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 223, 217),
+                          color: ColorManager.greyPrimaryBackground,
                           borderRadius: BorderRadiusManager.textfieldRadius * 2,
                         ),
-                        child: const Icon(
-                          Icons.payments_outlined,
-                          size: 48,
-                          color: Color.fromRGBO(255, 14, 14, 1),
+                        child: Image.asset(
+                          'assets/piutang_logo.png',
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -190,15 +122,13 @@ class _MenuViewState extends State<MainMenuView> {
                   child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(19),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 234, 192),
+                          color: ColorManager.greyPrimaryBackground,
                           borderRadius: BorderRadiusManager.textfieldRadius * 2,
                         ),
-                        child: const Iconify(
-                          Fa6Solid.coins,
-                          size: 38,
-                          color: Color.fromRGBO(255, 179, 0, 1),
+                        child: Image.asset(
+                          'assets/point_logo.png',
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -218,6 +148,113 @@ class _MenuViewState extends State<MainMenuView> {
     );
   }
 
+  List<Widget> get imageSliders => mainMenuController.imgList
+      .map((item) => Container(
+            margin: PaddingMarginManager.miniHorizontallySuperView,
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: ClipRRect(
+                borderRadius: BorderRadiusManager.textfieldRadius * 4,
+                child: Image.network(
+                  item,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    } else {
+                      return Container(
+                        color: ColorManager.greyPrimaryBackground,
+                        child: Center(
+                          child: SizedBox(
+                            height: 72,
+                            width: 72,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 6,
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null, // Shows a progress indicator.
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  errorBuilder: (BuildContext context, Object error,
+                      StackTrace? stackTrace) {
+                    return Container(
+                      color: ColorManager.greyPrimaryBackground,
+                      child: const Center(
+                        child: Icon(
+                          Icons.broken_image_outlined,
+                          size: 300,
+                          color: ColorManager.disabledBackground,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ))
+      .toList();
+
+  Widget carouselBanner() {
+    return mainMenuController.isBanner
+        ? Stack(
+            children: [
+              CarouselSlider(
+                items: imageSliders,
+                carouselController: mainMenuController.carouselSliderController,
+                options: CarouselOptions(
+                    height: 296, // Adjust height if needed
+                    enableInfiniteScroll: true,
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 10),
+                    enlargeCenterPage: true,
+                    enlargeFactor: 0.4,
+                    enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        mainMenuController.current = index;
+                      });
+                    }),
+              ),
+              Positioned(
+                bottom: 12,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:
+                      mainMenuController.imgList.asMap().entries.map((entry) {
+                    return InkWell(
+                      onTap: () {
+                        mainMenuController.carouselSliderController
+                            .animateToPage(entry.key, duration: const Duration(milliseconds: 800), curve: Curves.fastEaseInToSlowEaseOut);
+                      },
+                      child: Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: mainMenuController.current == entry.key
+                                ? ColorManager.primary
+                                : ColorManager.white),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          )
+        : const SizedBox();
+  }
+
   Widget bottomMenuUIImage() {
     return Stack(
       clipBehavior: Clip.none,
@@ -227,11 +264,13 @@ class _MenuViewState extends State<MainMenuView> {
           left: 0,
           right: 0,
           child: Center(
-            child: Image.asset(
-              'assets/pana.png',
-              height: 234,
-              width: 234,
-            ),
+            child: mainMenuController.isBanner
+                ? null
+                : Image.asset(
+                    'assets/pana.png',
+                    height: 234,
+                    width: 234,
+                  ),
           ),
         ),
         ClipRRect(
@@ -241,7 +280,7 @@ class _MenuViewState extends State<MainMenuView> {
           ),
           child: const BottomAppBar(
             color: ColorManager.primary,
-            height: 124,
+            height: 86,
             child: Center(
               child: Text(
                 '''"Health is not just about what you're eating. It's also about what you're thinking and saying."''',
@@ -255,43 +294,59 @@ class _MenuViewState extends State<MainMenuView> {
     );
   }
 
+  Widget settingsUIButton() {
+    return Container(
+      margin: const EdgeInsets.only(right: 2),
+      child: IconButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => const SetttingView(),
+            ),
+          );
+        },
+        icon: const Icon(
+          Icons.settings_outlined,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: ColorManager.primary,
-        title: const Text(
-          'SMS Apps',
-          style: TextStyle(
-            color: ColorManager.white,
-            fontSize: FontSizeManager.title1,
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              settingsUIButton(),
+              logoUIImage(),
+              const SizedBox(
+                height: 16,
+              ),
+              const Center(
+                child: Text(
+                  'Pilih Menu',
+                  style: TextStyle(
+                      fontSize: FontSizeManager.title3,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              mainFeature(),
+              const SizedBox(
+                height: 16,
+              ),
+              carouselBanner(),
+              const SizedBox(
+                height: 16,
+              ),
+            ],
           ),
         ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 2),
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (ctx) => const SetttingView(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.settings_outlined,
-                color: ColorManager.white,
-              ),
-            ),
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          logoutUIButton(),
-          const SizedBox(height: 64),
-          mainFeature(),
-        ],
       ),
       bottomNavigationBar: bottomMenuUIImage(),
     );

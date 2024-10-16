@@ -1,8 +1,6 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/login_controller.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/login_screen/login_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/healthicons.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatefulWidget {
@@ -16,44 +14,11 @@ class _LoginViewState extends State<LoginView> {
   final LoginController loginController = LoginController();
   final LoginDialog loginDialog = LoginDialog();
 
-  Widget welcomeDisplaysUIView() {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            child: const Iconify(
-              Healthicons.pharmacy,
-              size: 64,
-              color: ColorManager.primary,
-            ),
-          ),
-          Container(
-            margin: PaddingMarginManager.horizontallySuperView,
-            child: const Text(
-              'SMS Apps',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: FontSizeManager.title1,
-                fontWeight: FontWeight.bold,
-                color: ColorManager.blackText,
-              ),
-            ),
-          ),
-          Container(
-            margin: PaddingMarginManager.horizontallySuperView,
-            child: const Text(
-              'Silahkan masukkan data untuk login',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: FontSizeManager.headlineBody,
-                color: ColorManager.subheadFootnote,
-              ),
-            ),
-          ),
-        ],
+  Widget logoUIImage() {
+    return Container(
+      margin: PaddingMarginManager.horizontallySuperView,
+      child: Image.asset(
+        'assets/semesta_megah_sentosa_logo.png',
       ),
     );
   }
@@ -88,7 +53,7 @@ class _LoginViewState extends State<LoginView> {
               hintText: "Masukkan username anda",
               prefixIcon: Icon(
                 Icons.person_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -144,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
               hintText: "Masukkan kata sandi akun",
               prefixIcon: const Icon(
                 Icons.lock_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: const BoxConstraints(
@@ -160,7 +125,7 @@ class _LoginViewState extends State<LoginView> {
                 },
                 icon: Icon(
                   loginController.securePasswordIcon,
-                  size: 26,
+                  size: 24,
                   color: ColorManager.primary,
                 ),
               ),
@@ -187,7 +152,8 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Widget loginUIButton() {
-    return SizedBox(
+    return Container(
+      margin: PaddingMarginManager.horizontallySuperView,
       height: 34,
       width: double.infinity,
       child: FilledButton(
@@ -218,7 +184,8 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Widget registerUIButton() {
-    return SizedBox(
+    return Container(
+      margin: PaddingMarginManager.horizontallySuperView,
       width: double.infinity,
       child: TextButton(
         onPressed: () {
@@ -250,24 +217,18 @@ class _LoginViewState extends State<LoginView> {
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: SizedBoxManager.largeSpace),
-              welcomeDisplaysUIView(),
+              const SizedBox(height: 124),
+              logoUIImage(),
               const SizedBox(height: 124),
               usernameUITextField(),
               const SizedBox(height: 16),
-              passwordUITextField()
+              passwordUITextField(),
+              const SizedBox(height: 32),
+              loginUIButton(),
+              const SizedBox(height: 6),
+              registerUIButton()
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        height: BottomAppBarManager.regular + 28,
-        child: Column(
-          children: [
-            loginUIButton(),
-            const SizedBox(height: 6),
-            registerUIButton()
-          ],
         ),
       ),
     );

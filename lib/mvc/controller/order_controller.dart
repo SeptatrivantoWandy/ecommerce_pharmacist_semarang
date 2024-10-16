@@ -176,8 +176,21 @@ class OrderController {
     searchDataList = orderDataList;
   }
 
-  void initAddToCartModal(DrugData drugData) {
+  String reformatCondition(String condition) {
+    String reformatedStringCondition = condition;
+    if (condition.contains('=') && !condition.contains("%")) {
+      List<String> parts = condition.split('=');
+      parts[1] = formatBalance(parts[1]);
+      reformatedStringCondition = '${parts[0]}=${parts[1]}';
+    }
+    reformatedStringCondition = reformatedStringCondition
+        .replaceAll('=', ' = ')
+        .replaceAll('-', ' - ')
+        .replaceAll('>', ' >');
+    return reformatedStringCondition;
+  }
 
+  void initAddToCartModal(DrugData drugData) {
     beli1a = int.parse(drugData.drugDetail.beli1a);
     beli1b = int.parse(drugData.drugDetail.beli1b);
     bonus1 = int.parse(drugData.drugDetail.bonus1);
@@ -202,7 +215,8 @@ class OrderController {
     priceMedicine = double.parse(drugData.drugDetail.hrg1Hv);
     priceFormula();
 
-    totalPriceMedicine = (priceMedicine * quantityMedicine) - ((priceMedicine * quantityMedicine) * (finalDisc / 100));
+    totalPriceMedicine = (priceMedicine * quantityMedicine) -
+        ((priceMedicine * quantityMedicine) * (finalDisc / 100));
     finalBonus = 0;
     finalDisc = 0;
   }
@@ -216,7 +230,8 @@ class OrderController {
 
     priceFormula();
 
-    totalPriceMedicine = (priceMedicine * quantityMedicine) - ((priceMedicine * quantityMedicine) * (finalDisc / 100));
+    totalPriceMedicine = (priceMedicine * quantityMedicine) -
+        ((priceMedicine * quantityMedicine) * (finalDisc / 100));
     // print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100)) = $totalPriceMedicine');
   }
 
@@ -280,7 +295,8 @@ class OrderController {
     quantityMedicine++;
     priceFormula();
 
-    totalPriceMedicine = (priceMedicine * quantityMedicine) - ((priceMedicine * quantityMedicine) * (finalDisc / 100));
+    totalPriceMedicine = (priceMedicine * quantityMedicine) -
+        ((priceMedicine * quantityMedicine) * (finalDisc / 100));
     // print('($priceMedicine * $quantityMedicine) - (($priceMedicine * $quantityMedicine) * ($finalDisc / 100)) = $totalPriceMedicine');
   }
 
@@ -288,7 +304,8 @@ class OrderController {
     quantityMedicine--;
     priceFormula();
 
-    totalPriceMedicine = (priceMedicine * quantityMedicine) - ((priceMedicine * quantityMedicine) * (finalDisc / 100));
+    totalPriceMedicine = (priceMedicine * quantityMedicine) -
+        ((priceMedicine * quantityMedicine) * (finalDisc / 100));
   }
 
   Future<bool> masukkanKeranjangPressed(
@@ -306,7 +323,7 @@ class OrderController {
       bonus: finalBonus,
       drugPrice: priceMedicine,
       drugPriceTotal: totalPriceMedicine,
-      discount: finalDisc, 
+      discount: finalDisc,
     );
 
     // request.printAddToCartRequest();

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ecommerce_pharmacist_semarang/mvc/model/addtocart/add_to_cart_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/addtocart/add_to_cart_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/banner/banner_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_response.dart';
@@ -160,6 +161,40 @@ class MlgnBaruService {
       return MlgnBaruResponse(
         status: false,
         message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
+class BannerService {
+  Future<BannerResponse?> getBanners() async {
+    final url = Uri.parse('$baseUrl/getBanner.php');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return BannerResponse.fromJson(jsonResponse);
+      } else {
+        // Handle non-200 status codes
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return BannerResponse(
+          status: false,
+          message: errorMessage,
+          imageData: [],
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return BannerResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+        imageData: [],
       );
     }
   }
@@ -438,6 +473,7 @@ class PointService {
         );
       }
     } catch (e) {
+      print('object');
       if (kDebugMode) {
         print('An unexpected error occurred: $e');
       }

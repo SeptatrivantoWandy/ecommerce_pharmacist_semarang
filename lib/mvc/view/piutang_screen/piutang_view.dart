@@ -46,6 +46,7 @@ class _PiutangViewState extends State<PiutangView> {
               children: [
                 const Icon(
                   Symbols.calendar_clock_rounded,
+                  size: 16,
                   color: ColorManager.negative,
                 ),
                 const SizedBox(width: 4),
@@ -136,7 +137,7 @@ class _PiutangViewState extends State<PiutangView> {
                     children: [
                       Icon(
                         Icons.payments_outlined,
-                        size: 20,
+                        size: 16,
                         color: ColorManager.primary,
                       ),
                       SizedBox(width: 6),

@@ -47,7 +47,7 @@ class _ClaimPointViewState extends State<ClaimPointView> {
               children: [
                 Icon(
                   Icons.payments_outlined,
-                  size: 20,
+                  size: 16,
                   color: ColorManager.primary,
                 ),
                 SizedBox(width: 6),
@@ -112,7 +112,7 @@ class _ClaimPointViewState extends State<ClaimPointView> {
               prefixText: 'Rp',
               prefixIcon: Icon(
                 Icons.wallet_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -298,7 +298,7 @@ class _ClaimPointViewState extends State<ClaimPointView> {
               hintText: "Masukkan nama bank",
               prefixIcon: Icon(
                 Icons.account_balance_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -355,7 +355,7 @@ class _ClaimPointViewState extends State<ClaimPointView> {
               hintText: "Masukkan nomor rekening",
               prefixIcon: Icon(
                 Icons.credit_card_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -411,7 +411,7 @@ class _ClaimPointViewState extends State<ClaimPointView> {
               hintText: "Masukkan atas nama",
               prefixIcon: Icon(
                 Icons.person_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -530,8 +530,7 @@ class _ClaimPointViewState extends State<ClaimPointView> {
                 ),
               ),
             );
-          } else if (pointController.pointDataList != null &&
-              pointController.pointDataList!.isNotEmpty) {
+          } else if (pointController.totalPointNow != null) {
             // Show the success state
             claimPointViewBody = SingleChildScrollView(
               child: Column(

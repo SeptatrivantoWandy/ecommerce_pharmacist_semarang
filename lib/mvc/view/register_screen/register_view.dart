@@ -21,6 +21,15 @@ class _RegisterViewState extends State<RegisterView> {
   RegisterDialog registerDialog = RegisterDialog();
   ImagePickerModal imagePickerModal = ImagePickerModal();
 
+  Widget logoUIImage() {
+    return Container(
+      margin: PaddingMarginManager.horizontallySuperView,
+      child: Image.asset(
+        'assets/semesta_megah_sentosa_logo.png',
+      ),
+    );
+  }
+
   Widget welcomeDisplaysUIView() {
     return SizedBox(
       width: double.infinity,
@@ -94,7 +103,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan username anda",
               prefixIcon: Icon(
                 Icons.person_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -151,7 +160,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan kata sandi akun",
               prefixIcon: const Icon(
                 Icons.lock_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: const BoxConstraints(
@@ -167,7 +176,7 @@ class _RegisterViewState extends State<RegisterView> {
                 },
                 icon: Icon(
                   registerController.securePasswordIcon,
-                  size: 26,
+                  size: 24,
                   color: ColorManager.primary,
                 ),
               ),
@@ -225,7 +234,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Konfirmasi kata sandi akun",
               prefixIcon: const Icon(
                 Icons.lock_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: const BoxConstraints(
@@ -241,7 +250,7 @@ class _RegisterViewState extends State<RegisterView> {
                 },
                 icon: Icon(
                   registerController.secureConfirmPasswordIcon,
-                  size: 26,
+                  size: 24,
                   color: ColorManager.primary,
                 ),
               ),
@@ -297,7 +306,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan nama apotek",
               prefixIcon: Icon(
                 Icons.local_pharmacy_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -354,7 +363,7 @@ class _RegisterViewState extends State<RegisterView> {
                 hintText: "Masukkan alamat",
                 prefixIcon: Icon(
                   Icons.location_on_outlined,
-                  size: 26,
+                  size: 24,
                   color: ColorManager.primary,
                 ),
                 prefixIconConstraints: BoxConstraints(
@@ -410,7 +419,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan kota",
               prefixIcon: Icon(
                 Icons.location_city_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -467,7 +476,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan nomor telepon",
               prefixIcon: Icon(
                 Icons.phone_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -523,7 +532,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan email",
               prefixIcon: Icon(
                 Icons.mail_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -580,7 +589,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan nomor izin apotek",
               prefixIcon: Icon(
                 Symbols.demography_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -716,7 +725,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Izin apotek berlaku s/d",
               prefixIcon: Icon(
                 Icons.calendar_month_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -771,7 +780,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan nama apoteker",
               prefixIcon: Icon(
                 Icons.badge_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -828,7 +837,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Masukkan nomor izin apoteker",
               prefixIcon: Icon(
                 Symbols.contract_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -965,7 +974,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Nomor apoteker berlaku s/d",
               prefixIcon: Icon(
                 Icons.event_note_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -1035,7 +1044,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Nama",
               prefixIcon: Icon(
                 Icons.person_outline_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -1091,7 +1100,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Alamat",
               prefixIcon: Icon(
                 Icons.location_on_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -1146,7 +1155,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "Kota",
               prefixIcon: Icon(
                 Icons.location_city_rounded,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -1203,7 +1212,7 @@ class _RegisterViewState extends State<RegisterView> {
               hintText: "NPWP",
               prefixIcon: Icon(
                 Icons.description_outlined,
-                size: 26,
+                size: 24,
                 color: ColorManager.primary,
               ),
               prefixIconConstraints: BoxConstraints(
@@ -1328,13 +1337,14 @@ class _RegisterViewState extends State<RegisterView> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Register'),
+          title: const Text('Registrasi Akun'),
         ),
         body: SingleChildScrollView(
           child: SafeArea(
             child: Column(
               children: [
-                welcomeDisplaysUIView(),
+                const SizedBox(height: 48),
+                logoUIImage(),
                 const SizedBox(height: 48),
                 usernameUITextField(),
                 const SizedBox(height: 16),
