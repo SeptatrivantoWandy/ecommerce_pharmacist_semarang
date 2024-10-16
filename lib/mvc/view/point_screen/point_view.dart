@@ -77,6 +77,7 @@ class _PointViewState extends State<PointView> {
                 children: [
                   const Icon(
                     Icons.calendar_month_rounded,
+                    size: 16,
                     color: ColorManager.primary,
                   ),
                   const SizedBox(width: 4),
@@ -97,6 +98,7 @@ class _PointViewState extends State<PointView> {
                 children: [
                   const Icon(
                     Icons.calendar_month_rounded,
+                    size: 16,
                     color: ColorManager.primary,
                   ),
                   const SizedBox(width: 4),
@@ -130,6 +132,7 @@ class _PointViewState extends State<PointView> {
               children: [
                 const Icon(
                   Icons.calendar_month_rounded,
+                  size: 16,
                   color: ColorManager.primary,
                 ),
                 const SizedBox(width: 4),
@@ -216,7 +219,7 @@ class _PointViewState extends State<PointView> {
                     children: [
                       Icon(
                         Icons.payments_outlined,
-                        size: 20,
+                        size: 16,
                         color: ColorManager.primary,
                       ),
                       SizedBox(width: 6),

@@ -6,6 +6,7 @@ class ImagePickerModal {
   void imagePickerModalPressed(
       BuildContext context, RegisterController registerController, String fotoDari, Function onUpdate) {
     showModalBottomSheet(
+      backgroundColor: ColorManager.backgroundPage,
       useSafeArea: true,
       isScrollControlled: true,
       context: context,

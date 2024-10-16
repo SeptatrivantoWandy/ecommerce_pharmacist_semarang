@@ -46,6 +46,7 @@ dependencies:
   iconify_flutter: ^0.0.5
   package_info_plus: ^4.2.0
   shimmer: ^3.0.0
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,12 @@ flutter:
   assets:
     - assets/pana.png
     - assets/123650.jpeg
+    - assets/semesta_megah_sentosa_logo.png
+    - assets/semesta_megah_sentosa_icon.png
+    - assets/piutang_logo.png
+    - assets/point_logo.png
+    - assets/order_pesanan_logo.png
+    - assets/test_banner.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

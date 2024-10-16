@@ -1,3 +1,5 @@
+import 'package:ecommerce_pharmacist_semarang/mvc/controller/settings_controller.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/settings_screen/settings_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,6 +13,9 @@ class SetttingView extends StatefulWidget {
 }
 
 class _SetttingViewState extends State<SetttingView> {
+  SettingsController settingsController = SettingsController();
+  SettingsDialog settingsDialog = SettingsDialog();
+
   final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
   String? username;
   String? userId;
@@ -36,6 +41,31 @@ class _SetttingViewState extends State<SetttingView> {
       userId = prefs.getString('userId');
       userCode = prefs.getString('userCode');
     });
+  }
+
+  Widget logoutUIButton() {
+    return SizedBox(
+      height: 34,
+      width: double.infinity,
+      child: FilledButton(
+        onPressed: () {
+          settingsDialog.logoutAlertDialog(context, settingsController);
+        },
+        style: FilledButton.styleFrom(
+          backgroundColor: ColorManager.primary,
+          foregroundColor: ColorManager.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        child: const Text(
+          'Logout Akun',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -150,6 +180,15 @@ class _SetttingViewState extends State<SetttingView> {
               ),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: ColorManager.backgroundPage,
+        height: BottomAppBarManager.regular,
+        child: Column(
+          children: [
+            logoutUIButton(),
+          ],
         ),
       ),
     );

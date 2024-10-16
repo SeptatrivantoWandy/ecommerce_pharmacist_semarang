@@ -13,7 +13,8 @@ class CartResponse {
 
   factory CartResponse.fromJson(Map<String, dynamic> json) {
     var list = json['cartData'] as List;
-    List<CartData> cartDataList = list.map((i) => CartData.fromJson(i)).toList();
+    List<CartData> cartDataList =
+        list.map((i) => CartData.fromJson(i)).toList();
 
     return CartResponse(
       status: json['status'] ?? false,
@@ -23,49 +24,49 @@ class CartResponse {
   }
 
   void printCartResponse() {
-  if (kDebugMode) {
-    print('========== printCartResponse ==========');
-    print('Status: $status');
-    print('Message: $message');
-    print('Cart Data:');
-    for (var data in cartData) {
-      print('User Code: ${data.userCode}');
-      print('Cart Measure: ${data.cartMeasure}');
-      print('Cart Quantity: ${data.cartQty}');
-      print('Cart Bonus: ${data.cartBonus}');
-      print('Cart Drug Price: ${data.cartDrugPrice}');
-      print('Cart Discount: ${data.cartDiscount}');
-      print('Drug Data:');
-      print('  Drug Code: ${data.drugData.drugCode}');
-      print('  Drug Name: ${data.drugData.drugName}');
-      print('  Drug Image: ${data.drugData.drugImage}');
-      print('  Drug Detail:');
-      print('    Drug Measure: ${data.drugData.drugDetail.drugMeasure}');
-      print('    Drug Measure 2: ${data.drugData.drugDetail.drugMeasure2}');
-      print('    Harga 1 HV: ${data.drugData.drugDetail.hrg1Hv}');
-      print('    Harga 2 HV: ${data.drugData.drugDetail.hrg2Hv}');
-      print('    Beli 1a: ${data.drugData.drugDetail.beli1a}');
-      print('    Beli 1b: ${data.drugData.drugDetail.beli1b}');
-      print('    Bonus 1: ${data.drugData.drugDetail.bonus1}');
-      print('    Diskon 1: ${data.drugData.drugDetail.disc1}');
-      print('    Harga Jadi 1: ${data.drugData.drugDetail.hrgJadi1}');
-      print('    Kondisi 1: ${data.drugData.drugDetail.kond1}');
-      print('    Beli 2a: ${data.drugData.drugDetail.beli2a}');
-      print('    Beli 2b: ${data.drugData.drugDetail.beli2b}');
-      print('    Bonus 2: ${data.drugData.drugDetail.bonus2}');
-      print('    Diskon 2: ${data.drugData.drugDetail.disc2}');
-      print('    Harga Jadi 2: ${data.drugData.drugDetail.hrgJadi2}');
-      print('    Kondisi 2: ${data.drugData.drugDetail.kond2}');
-      print('    Beli 3a: ${data.drugData.drugDetail.beli3a}');
-      print('    Beli 3b: ${data.drugData.drugDetail.beli3b}');
-      print('    Bonus 3: ${data.drugData.drugDetail.bonus3}');
-      print('    Diskon 3: ${data.drugData.drugDetail.disc3}');
-      print('    Harga Jadi 3: ${data.drugData.drugDetail.hrgJadi3}');
-      print('    Kondisi 3: ${data.drugData.drugDetail.kond3}');
-      print('---');
+    if (kDebugMode) {
+      print('========== printCartResponse ==========');
+      print('Status: $status');
+      print('Message: $message');
+      print('Cart Data:');
+      for (var data in cartData) {
+        print('User Code: ${data.userCode}');
+        print('Cart Measure: ${data.cartMeasure}');
+        print('Cart Quantity: ${data.cartQty}');
+        print('Cart Bonus: ${data.cartBonus}');
+        print('Cart Drug Price: ${data.cartDrugPrice}');
+        print('Cart Discount: ${data.cartDiscount}');
+        print('Drug Data:');
+        print('  Drug Code: ${data.drugData.drugCode}');
+        print('  Drug Name: ${data.drugData.drugName}');
+        print('  Drug Image: ${data.drugData.drugImage}');
+        print('  Drug Detail:');
+        print('    Drug Measure: ${data.drugData.drugDetail.drugMeasure}');
+        print('    Drug Measure 2: ${data.drugData.drugDetail.drugMeasure2}');
+        print('    Harga 1 HV: ${data.drugData.drugDetail.hrg1Hv}');
+        print('    Harga 2 HV: ${data.drugData.drugDetail.hrg2Hv}');
+        print('    Beli 1a: ${data.drugData.drugDetail.beli1a}');
+        print('    Beli 1b: ${data.drugData.drugDetail.beli1b}');
+        print('    Bonus 1: ${data.drugData.drugDetail.bonus1}');
+        print('    Diskon 1: ${data.drugData.drugDetail.disc1}');
+        print('    Harga Jadi 1: ${data.drugData.drugDetail.hrgJadi1}');
+        print('    Kondisi 1: ${data.drugData.drugDetail.kond1}');
+        print('    Beli 2a: ${data.drugData.drugDetail.beli2a}');
+        print('    Beli 2b: ${data.drugData.drugDetail.beli2b}');
+        print('    Bonus 2: ${data.drugData.drugDetail.bonus2}');
+        print('    Diskon 2: ${data.drugData.drugDetail.disc2}');
+        print('    Harga Jadi 2: ${data.drugData.drugDetail.hrgJadi2}');
+        print('    Kondisi 2: ${data.drugData.drugDetail.kond2}');
+        print('    Beli 3a: ${data.drugData.drugDetail.beli3a}');
+        print('    Beli 3b: ${data.drugData.drugDetail.beli3b}');
+        print('    Bonus 3: ${data.drugData.drugDetail.bonus3}');
+        print('    Diskon 3: ${data.drugData.drugDetail.disc3}');
+        print('    Harga Jadi 3: ${data.drugData.drugDetail.hrgJadi3}');
+        print('    Kondisi 3: ${data.drugData.drugDetail.kond3}');
+        print('---');
+      }
     }
   }
-}
 }
 
 class CartData {
