@@ -95,6 +95,7 @@ class _CartViewState extends State<CartView> {
                     child: Icon(
                       Icons.broken_image_outlined,
                       size: 48,
+                      color: ColorManager.disabledBackground,
                     ),
                   );
                 },
@@ -102,7 +103,17 @@ class _CartViewState extends State<CartView> {
                   if (loadingProgress == null) {
                     return child; // Image is fully loaded
                   } else {
-                    return const CircularProgressIndicator();
+                    return const SizedBox(
+                      height: 62,
+                      width: 62,
+                      child: Center(
+                        child: SizedBox(
+                          height: 48,
+                          width: 48,
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
                   }
                 },
               ),

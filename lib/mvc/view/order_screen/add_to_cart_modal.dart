@@ -6,7 +6,6 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
 class AddToCartModal {
-
   Widget medicineNameUILabel(DrugData drugData) {
     return Container(
       width: double.infinity,
@@ -104,11 +103,12 @@ class AddToCartModal {
                   fit: BoxFit.fitHeight,
                   errorBuilder: (context, error, stackTrace) {
                     return const SizedBox(
-                      height: 62,
+                      height: 116,
                       width: 62,
                       child: Icon(
                         Icons.broken_image_outlined,
                         size: 48,
+                        color: ColorManager.disabledBackground,
                       ),
                     );
                   },
@@ -116,7 +116,17 @@ class AddToCartModal {
                     if (loadingProgress == null) {
                       return child; // Image is fully loaded
                     } else {
-                      return const CircularProgressIndicator();
+                      return const SizedBox(
+                        height: 116,
+                        width: 62,
+                        child: Center(
+                          child: SizedBox(
+                            height: 48,
+                            width: 48,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
                     }
                   },
                 ),
