@@ -124,11 +124,12 @@ class _OrderViewState extends State<OrderView> {
                               fit: BoxFit.fitHeight,
                               errorBuilder: (context, error, stackTrace) {
                                 return const SizedBox(
-                                  height: 62,
+                                  height: 100,
                                   width: 62,
                                   child: Icon(
                                     Icons.broken_image_outlined,
                                     size: 48,
+                                    color: ColorManager.disabledBackground,
                                   ),
                                 );
                               },
@@ -137,11 +138,15 @@ class _OrderViewState extends State<OrderView> {
                                 if (loadingProgress == null) {
                                   return child; // Image is fully loaded
                                 } else {
-                                  return const Center(
-                                    child: SizedBox(
-                                      height: 72,
-                                      width: 72,
-                                      child: CircularProgressIndicator(),
+                                  return const SizedBox(
+                                    height: 100,
+                                    width: 62,
+                                    child: Center(
+                                      child: SizedBox(
+                                        height: 48,
+                                        width: 48,
+                                        child: CircularProgressIndicator(),
+                                      ),
                                     ),
                                   );
                                 }
