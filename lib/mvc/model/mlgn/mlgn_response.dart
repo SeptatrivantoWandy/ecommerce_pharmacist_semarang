@@ -6,6 +6,7 @@ class MlgnResponse {
   String userId;
   String username;
   String userCode;
+  String isSales;
 
   MlgnResponse({
     required this.status,
@@ -13,6 +14,7 @@ class MlgnResponse {
     required this.userId,
     required this.username,
     required this.userCode,
+    required this.isSales
   });
 
   factory MlgnResponse.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class MlgnResponse {
       userId: json['userId'] ?? '', // Provide a default value for userId
       username: json['username'] ?? '', // Provide a default value for username
       userCode: json['userCode'] ?? '', // Provide a default value for userCode
+      isSales: json['isSales'] ?? '', // Provide a default value for isSales
     );
   }
 
@@ -33,6 +36,7 @@ class MlgnResponse {
       print('UserId: $userId');
       print('Username: $username');
       print('UserCode: $userCode');
+      print('IsSales: $isSales');
     }
   }
 }

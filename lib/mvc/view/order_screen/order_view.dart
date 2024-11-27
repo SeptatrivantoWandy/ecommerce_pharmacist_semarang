@@ -10,7 +10,8 @@ import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
 
 class OrderView extends StatefulWidget {
-  const OrderView({super.key});
+  const OrderView({super.key, required this.customerName});
+  final String customerName;
 
   @override
   State<OrderView> createState() => _OrderViewState();
@@ -118,40 +119,54 @@ class _OrderViewState extends State<OrderView> {
                           borderRadius: BorderRadiusManager.textfieldRadius,
                           child: Container(
                             color: ColorManager.white,
-                            child: Image.network(
-                              drugData.drugImage,
-                              height: 100,
-                              fit: BoxFit.fitHeight,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const SizedBox(
-                                  height: 100,
-                                  width: 62,
-                                  child: Icon(
-                                    Icons.broken_image_outlined,
-                                    size: 48,
-                                    color: ColorManager.disabledBackground,
-                                  ),
-                                );
-                              },
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child; // Image is fully loaded
-                                } else {
-                                  return const SizedBox(
+                            child: drugData.drugImage.isNotEmpty
+                                ? Image.network(
+                                    drugData.drugImage,
+                                    height: 100,
+                                    fit: BoxFit.fitHeight,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        padding:
+                                            PaddingMarginManager.allSuperView,
+                                        height: 100,
+                                        width: 62,
+                                        child: Image.asset(
+                                          'assets/semesta_megah_sentosa_icon.png',
+                                          height: 12,
+                                          width: 12,
+                                        ),
+                                      );
+                                    },
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child; // Image is fully loaded
+                                      } else {
+                                        return const SizedBox(
+                                          height: 100,
+                                          width: 62,
+                                          child: Center(
+                                            child: SizedBox(
+                                              height: 48,
+                                              width: 48,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  )
+                                : Container(
+                                    padding: PaddingMarginManager.allSuperView,
                                     height: 100,
                                     width: 62,
-                                    child: Center(
-                                      child: SizedBox(
-                                        height: 48,
-                                        width: 48,
-                                        child: CircularProgressIndicator(),
-                                      ),
+                                    child: Image.asset(
+                                      'assets/semesta_megah_sentosa_icon.png',
+                                      height: 12,
+                                      width: 12,
                                     ),
-                                  );
-                                }
-                              },
-                            ),
+                                  ),
                           ),
                         ),
                       ),
@@ -265,6 +280,13 @@ class _OrderViewState extends State<OrderView> {
                                     .primary, // Blue color for drugMeasure
                               ),
                             ),
+                      TextSpan(
+                        text: ' ${drugData.drugDetail.expiryDate}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: ColorManager.negative,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -423,6 +445,27 @@ class _OrderViewState extends State<OrderView> {
     );
   }
 
+  Widget customerNameUILabel() {
+    return Container(
+      margin: PaddingMarginManager.horizontallySuperView,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Nama Pelanggan',
+            style: TextStyle(
+              fontSize: FontSizeManager.subheadFootnote,
+              color: ColorManager.subheadFootnote,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(widget.customerName),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -459,6 +502,8 @@ class _OrderViewState extends State<OrderView> {
             // Show the success state
             orderViewBody = Column(
               children: [
+                customerNameUILabel(),
+                const SizedBox(height: 12),
                 searchUITextField(),
                 const SizedBox(height: 16),
                 orderUIListView()

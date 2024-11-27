@@ -109,6 +109,7 @@ class DrugDetail {
   final String disc3;
   final String hrgJadi3;
   final String kond3;
+  final String expiryDate;
 
   DrugDetail({
     required this.drugMeasure,
@@ -133,6 +134,7 @@ class DrugDetail {
     required this.disc3,
     required this.hrgJadi3,
     required this.kond3,
+    required this.expiryDate,
   });
 
   factory DrugDetail.fromJson(Map<String, dynamic> json) {
@@ -159,6 +161,7 @@ class DrugDetail {
       disc3: json['disc3'],
       hrgJadi3: json['hrgJadi3'],
       kond3: json['kond3'],
+      expiryDate: json['expiryDate']
     );
   }
 }

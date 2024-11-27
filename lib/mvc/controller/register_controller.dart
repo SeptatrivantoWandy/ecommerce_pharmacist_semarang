@@ -174,10 +174,12 @@ class RegisterController {
   bool registerButtonPressed(BuildContext context) {
     if (usernameUIController.text.isEmpty) {
       usernameError = 'Username tidak boleh kosong';
-    } else if (usernameUIController.text.length < 5 ||
-        usernameUIController.text.length > 20) {
-      usernameError = 'Panjang username harus diantara 5 sampai 20 karakter';
-    } else {
+    } 
+    // else if (usernameUIController.text.length < 5 ||
+    //     usernameUIController.text.length > 20) {
+    //   usernameError = 'Panjang username harus diantara 5 sampai 20 karakter';
+    // } 
+    else {
       usernameError = '';
     }
 

@@ -71,7 +71,7 @@ class ClaimPointDialog {
         return const SuccessDialog(
           successDialogText:
               'Saldo point berhasil di ajukan, silahkan tunggu beberapa saat untuk dilakukan verifikasi internal agar dapat ditransfer ke nomor rekening tujuan.',
-          isPopAgain: true,
+          isSuccessFromCartPage: false,
         );
       },
     );

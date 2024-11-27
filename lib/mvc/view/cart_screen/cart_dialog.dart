@@ -5,8 +5,7 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/succes
 import 'package:flutter/material.dart';
 
 class CartDialog {
-  Future<bool> confirmOrderAlertDialog(
-      BuildContext context) async {
+  Future<bool> confirmOrderAlertDialog(BuildContext context) async {
     bool? action = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -24,8 +23,7 @@ class CartDialog {
     }
   }
 
-  Future<bool> confirmDeleteItemAlertDialog(
-      BuildContext context) async {
+  Future<bool> confirmDeleteItemAlertDialog(BuildContext context) async {
     bool? action = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -51,7 +49,7 @@ class CartDialog {
         return const SuccessDialog(
           successDialogText:
               'Keranjang belanja berhasil diajukan, silahkan tunggu beberapa saat untuk dilakukan konfirmasi internal agar dapat melanjutkan proses transaksi.',
-          isPopAgain: true,
+          isSuccessFromCartPage: true,
         );
       },
     );

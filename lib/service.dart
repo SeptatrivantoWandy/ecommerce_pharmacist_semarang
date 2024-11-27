@@ -6,8 +6,11 @@ import 'package:ecommerce_pharmacist_semarang/mvc/model/banner/banner_response.d
 import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/customer/customer_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/edituser/edit_user_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/edituser/edit_user_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/history/history_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/mlgn/mlgn_response.dart';
@@ -81,6 +84,7 @@ class MlgnService {
           userId: '',
           username: '',
           userCode: '',
+          isSales: ''
         );
       }
     } catch (e) {
@@ -94,6 +98,7 @@ class MlgnService {
         userId: '',
         username: '',
         userCode: '',
+        isSales: ''
       );
     }
   }
@@ -166,6 +171,43 @@ class MlgnBaruService {
   }
 }
 
+class EditUserService {
+  Future<EditUserResponse> editUser(EditUserRequest request) async {
+    final url = Uri.parse('$baseUrl/editUserData.php');
+
+    try {
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(const Duration(seconds: 4));
+          
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return EditUserResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return EditUserResponse(
+          status: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return EditUserResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
 class BannerService {
   Future<BannerResponse?> getBanners() async {
     final url = Uri.parse('$baseUrl/getBanner.php');
@@ -195,6 +237,36 @@ class BannerService {
         status: false,
         message: 'An unexpected error occurred.',
         imageData: [],
+      );
+    }
+  }
+}
+
+class CustomerService {
+  Future<CustomerResponse?> getCustomers() async {
+    final url = Uri.parse('$baseUrl/getCustomer.php');
+
+    try {
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return CustomerResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return CustomerResponse(
+          status: false,
+          message: errorMessage,
+          customerData: [],
+        );
+      }
+    } catch (e) {
+      // Handle unexpected errors
+      return CustomerResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+        customerData: [],
       );
     }
   }

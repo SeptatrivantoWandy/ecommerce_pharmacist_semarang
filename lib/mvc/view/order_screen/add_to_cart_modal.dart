@@ -97,39 +97,51 @@ class AddToCartModal {
               borderRadius: BorderRadiusManager.textfieldRadius,
               child: Container(
                 color: ColorManager.white,
-                child: Image.network(
-                  drugData.drugImage,
-                  height: 116,
-                  fit: BoxFit.fitHeight,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const SizedBox(
-                      height: 116,
-                      width: 62,
-                      child: Icon(
-                        Icons.broken_image_outlined,
-                        size: 48,
-                        color: ColorManager.disabledBackground,
-                      ),
-                    );
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child; // Image is fully loaded
-                    } else {
-                      return const SizedBox(
+                child: drugData.drugImage.isNotEmpty
+                    ? Image.network(
+                        drugData.drugImage,
+                        height: 116,
+                        fit: BoxFit.fitHeight,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            padding: PaddingMarginManager.allSuperView,
+                            height: 116,
+                            width: 62,
+                            child: Image.asset(
+                              'assets/semesta_megah_sentosa_icon.png',
+                              height: 12,
+                              width: 12,
+                            ),
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child; // Image is fully loaded
+                          } else {
+                            return const SizedBox(
+                              height: 116,
+                              width: 62,
+                              child: Center(
+                                child: SizedBox(
+                                  height: 48,
+                                  width: 48,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      )
+                    : Container(
+                        padding: PaddingMarginManager.allSuperView,
                         height: 116,
                         width: 62,
-                        child: Center(
-                          child: SizedBox(
-                            height: 48,
-                            width: 48,
-                            child: CircularProgressIndicator(),
-                          ),
+                        child: Image.asset(
+                          'assets/semesta_megah_sentosa_icon.png',
+                          height: 12,
+                          width: 12,
                         ),
-                      );
-                    }
-                  },
-                ),
+                      ),
               ),
             ),
           ),
@@ -251,6 +263,7 @@ class AddToCartModal {
                 'Gagal menambahkan ke keranjang.',
                 orderController.orderError!,
               );
+              orderController.orderError = '';
             }
           }
         },
