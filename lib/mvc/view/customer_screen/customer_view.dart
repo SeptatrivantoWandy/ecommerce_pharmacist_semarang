@@ -28,43 +28,105 @@ class _CustomerViewState extends State<CustomerView> {
     });
   }
 
-  Widget customerListView() {
-    return RefreshIndicator(
-      backgroundColor: Colors.white,
-      displacement: 0,
-      onRefresh: refreshData,
-      child: ListView.separated(
-        itemBuilder: (BuildContext context, int index) {
-          return SizedBox(
-            width: double.infinity,
-            child: InkWell(
-              onTap: () {
-                customerController.customerUIListItemPressed(context, index);
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                child: Text(
-                  customerController.customerDataList?[index].customerName ??
-                      '',
-                  style: const TextStyle(
-                    fontSize: FontSizeManager.headlineBody,
-                  ),
-                ),
-              ),
-            ),
-          );
+  searchUITextField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: ColorManager.white,
+        borderRadius: BorderRadiusManager.textfieldRadius,
+      ),
+      height: SizeManager.textFieldContainerHeight,
+      margin: PaddingMarginManager.textField,
+      child: TextField(
+        onChanged: (value) {
+          setState(() {
+            customerController.isNotEmptySearch = value.isNotEmpty;
+            customerController.searchDrug(value);
+          });
         },
-        separatorBuilder: (BuildContext context, int index) => Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            border: Border.all(width: 0.5, color: ColorManager.separator),
-            borderRadius: BorderRadius.circular(10),
+        style: const TextStyle(fontSize: FontSizeManager.headlineBody),
+        controller: customerController.searchCustomerUIController,
+        textAlignVertical: TextAlignVertical.center,
+        decoration: InputDecoration(
+          hintText: "Cari Pelanggan",
+          prefixIcon: const Icon(
+            Icons.search_rounded,
+            size: 24,
+            color: ColorManager.primary,
           ),
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 36,
+            minHeight: 34,
+          ),
+          suffixIcon: customerController.isNotEmptySearch
+              ? IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    setState(() {
+                      customerController.cancelSearchPressed();
+                    });
+                  },
+                  icon: Icon(
+                    Icons.cancel_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                )
+              : null,
         ),
-        itemCount: customerController.customerDataList?.length ?? 0,
       ),
     );
+  }
+
+  Widget customerListView() {
+    if (customerController.searchDataList!.isEmpty) {
+      return const Expanded(
+        child: Center(
+          child: EmptyContainer(
+            emptyMessage: 'Pelanggan tidak ditemukan',
+          ),
+        ),
+      );
+    } else {
+      return Expanded(
+        child: RefreshIndicator(
+          backgroundColor: Colors.white,
+          displacement: 0,
+          onRefresh: refreshData,
+          child: ListView.separated(
+            itemBuilder: (BuildContext context, int index) {
+              return SizedBox(
+                width: double.infinity,
+                child: InkWell(
+                  onTap: () {
+                    customerController.customerUIListItemPressed(
+                        context, index);
+                  },
+                  child: Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    child: Text(
+                      customerController.searchDataList?[index].customerName ??
+                          '',
+                      style: const TextStyle(
+                        fontSize: FontSizeManager.headlineBody,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(width: 0.5, color: ColorManager.separator),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            itemCount: customerController.searchDataList?.length ?? 0,
+          ),
+        ),
+      );
+    }
   }
 
   Widget muatUlangUIButton() {
@@ -121,7 +183,13 @@ class _CustomerViewState extends State<CustomerView> {
             );
           } else if (customerController.customerDataList != null &&
               customerController.customerDataList!.isNotEmpty) {
-            customerViewBody = customerListView();
+            customerViewBody = Column(
+              children: [
+                searchUITextField(),
+                const SizedBox(height: 16),
+                customerListView(),
+              ],
+            );
           } else {
             // Show the empty state
             customerViewBody = const Center(
