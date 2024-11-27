@@ -1,6 +1,7 @@
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/cart_controller.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/cart_screen/cart_dialog.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/cart_screen/payment_method_modal.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/cart_screen/quantity_button.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/empty_container.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/reusable_component/failure_container.dart';
@@ -19,6 +20,7 @@ class CartView extends StatefulWidget {
 class _CartViewState extends State<CartView> {
   CartController cartController = CartController();
   CartDialog cartDialog = CartDialog();
+  PaymentMethodModal paymentMethodModal = PaymentMethodModal();
 
   late Future<void> futureView;
 
@@ -83,40 +85,49 @@ class _CartViewState extends State<CartView> {
           children: [
             Container(
               color: ColorManager.white,
-              child: Image.network(
-                cartData.drugData.drugImage,
-                height: 62,
-                width: 62,
-                fit: BoxFit.fitHeight,
-                errorBuilder: (context, error, stackTrace) {
-                  return const SizedBox(
-                    height: 62,
-                    width: 62,
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                      size: 48,
-                      color: ColorManager.disabledBackground,
-                    ),
-                  );
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child; // Image is fully loaded
-                  } else {
-                    return const SizedBox(
+              child: cartData.drugData.drugImage.isNotEmpty
+                  ? Image.network(
+                      cartData.drugData.drugImage,
                       height: 62,
                       width: 62,
-                      child: Center(
-                        child: SizedBox(
-                          height: 48,
-                          width: 48,
-                          child: CircularProgressIndicator(),
-                        ),
+                      fit: BoxFit.fitHeight,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          padding:
+                              PaddingMarginManager.miniHorizontallySuperView,
+                          height: 62,
+                          width: 62,
+                          child: Image.asset(
+                            'assets/semesta_megah_sentosa_icon.png',
+                          ),
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child; // Image is fully loaded
+                        } else {
+                          return const SizedBox(
+                            height: 62,
+                            width: 62,
+                            child: Center(
+                              child: SizedBox(
+                                height: 48,
+                                width: 48,
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  : Container(
+                      padding: PaddingMarginManager.miniHorizontallySuperView,
+                      height: 62,
+                      width: 62,
+                      child: Image.asset(
+                        'assets/semesta_megah_sentosa_icon.png',
                       ),
-                    );
-                  }
-                },
-              ),
+                    ),
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -197,9 +208,7 @@ class _CartViewState extends State<CartView> {
             ? () async {
                 if (cartController.isEditSuccess == 'isSuccess') {
                   cartController.konfirmasiOrderPressed(
-                    context,
-                    cartDialog,
-                  );
+                      context, cartDialog, setState);
                 } else {
                   final bool isEditSuccess = await cartController.editOrder(
                     context,
@@ -210,9 +219,7 @@ class _CartViewState extends State<CartView> {
                   if (isEditSuccess && context.mounted) {
                     BuildContext localContext = context;
                     cartController.konfirmasiOrderPressed(
-                      localContext,
-                      cartDialog,
-                    );
+                        localContext, cartDialog, setState);
                   }
                 }
               }
@@ -234,61 +241,109 @@ class _CartViewState extends State<CartView> {
     );
   }
 
+  Widget totalPriceUILabel() {
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'TOTAL',
+            style: TextStyle(
+                fontSize: FontSizeManager.title2, fontWeight: FontWeight.bold),
+          ),
+          cartController.debounce != null && !cartController.debounce!.isActive
+              ? Text(
+                  'Rp${cartController.isEditSuccess == 'isSuccess' ? cartController.totalCartValue : '-1'}',
+                  style: TextStyle(
+                    fontSize: FontSizeManager.title2,
+                    fontWeight: FontWeight.bold,
+                    color: cartController.debounce != null &&
+                            !cartController.debounce!.isActive &&
+                            cartController.isEditSuccess == 'isSuccess' &&
+                            cartController.totalCartPrice >= 200000
+                        ? ColorManager.primary
+                        : ColorManager.negative,
+                  ),
+                )
+              : Shimmer.fromColors(
+                  baseColor: ColorManager.disabledBackground,
+                  highlightColor: const Color.fromARGB(0, 0, 0, 0),
+                  child: Container(
+                    width: 118.0,
+                    height: 26.0,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadiusManager.textfieldRadius,
+                    ),
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget paymentMethodUIModal() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: ColorManager.white,
+            borderRadius: BorderRadiusManager.textfieldRadius,
+          ),
+          padding: PaddingMarginManager.onlyRight6,
+          height: SizeManager.textFieldContainerHeight,
+          child: TextField(
+            onTap: cartController.debounce != null &&
+                    !cartController.debounce!.isActive
+                ? () {
+                    setState(() {
+                      paymentMethodModal.paymentMethodModalPressed(
+                          context, cartController);
+                    });
+                  }
+                : null,
+            readOnly: true,
+            style: const TextStyle(fontSize: FontSizeManager.headlineBody),
+            controller: cartController.paymentMethodUIController,
+            textAlignVertical: TextAlignVertical.center,
+            decoration: const InputDecoration(
+              hintText: 'Pilih metode pembayaran',
+              prefixIcon: Icon(
+                Icons.payment_rounded,
+                size: 24,
+                color: ColorManager.primary,
+              ),
+              prefixIconConstraints: BoxConstraints(
+                minWidth: 36,
+                minHeight: 34,
+              ),
+              suffixIcon: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 24,
+                color: ColorManager.primary,
+              ),
+              suffixIconConstraints: BoxConstraints(
+                minHeight: 34,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget bottomNavigationUIContainer() {
     return BottomAppBar(
       color: ColorManager.backgroundPage,
-      height: 142,
+      height: 144,
       child: Column(
         children: [
-          IntrinsicHeight(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'TOTAL',
-                  style: TextStyle(
-                      fontSize: FontSizeManager.title2,
-                      fontWeight: FontWeight.bold),
-                ),
-                cartController.debounce != null &&
-                        !cartController.debounce!.isActive
-                    ? Text(
-                        'Rp${cartController.isEditSuccess == 'isSuccess' ? cartController.totalCartValue : '-1'}',
-                        style: TextStyle(
-                          fontSize: FontSizeManager.title2,
-                          fontWeight: FontWeight.bold,
-                          color: cartController.debounce != null &&
-                                  !cartController.debounce!.isActive &&
-                                  cartController.isEditSuccess == 'isSuccess'
-                              ? ColorManager.primary
-                              : ColorManager.negative,
-                        ),
-                      )
-                    : Shimmer.fromColors(
-                        baseColor: ColorManager.disabledBackground,
-                        highlightColor: const Color.fromARGB(0, 0, 0, 0),
-                        child: Container(
-                          width: 118.0,
-                          height: 26.0,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadiusManager.textfieldRadius,
-                          ),
-                        ),
-                      ),
-              ],
-            ),
-          ),
+          totalPriceUILabel(),
           const SizedBox(height: 8),
+          paymentMethodUIModal(),
+          const SizedBox(height: 16),
           confirmOrderUIButton(),
-          const SizedBox(height: 8),
-          const Text(
-            'Catatan: pembayaran dan konfirmasi order dilakukan manual oleh pihak internal',
-            style: TextStyle(
-              color: ColorManager.subheadFootnote,
-              fontSize: FontSizeManager.subheadFootnote,
-            ),
-          )
         ],
       ),
     );

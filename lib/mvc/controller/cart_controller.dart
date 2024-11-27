@@ -28,6 +28,13 @@ class CartController {
   ScrollController scrollController = ScrollController();
   double scrollPercentage = 0.0;
 
+  TextEditingController paymentMethodUIController = TextEditingController();
+  final List<String> paymentMethodItems = [
+    'Kredit',
+    'Tunai',
+    'Cash on Delivery'
+  ];
+
   Future<void> loadUserData() async {
     final SharedPreferences prefs = await futurePrefs;
     userCode = prefs.getString('userCode')!;
@@ -100,7 +107,6 @@ class CartController {
       isEditSuccess = 'isSuccess';
       cartError = '';
 
-      // response.printCartResponse();
 
       // Initialize a list to store formatted CartData
       List<CartData> formattedCartDataList = [];
@@ -110,19 +116,13 @@ class CartController {
       // Iterate through the response data and format the values
       for (var cartItem in response.cartData) {
         // Format the cart price and calculate the total
-        
-        // print('---------');
-        
+
+
         double cartPriceValue = calculateDrugPriceTotal(
           double.parse(cartItem.cartDrugPrice),
           int.parse(cartItem.cartQty),
           double.parse(cartItem.cartDiscount),
         );
-
-        // print(cartItem.cartDrugPrice);
-        // response.printCartResponse();
-
-        // response.printCartResponse();
 
 
         totalCartPrice += cartPriceValue;
@@ -313,51 +313,69 @@ class CartController {
     }
   }
 
+  void paymentMethodModalPressed(BuildContext context, int index) {
+    paymentMethodUIController.text = paymentMethodItems[index];
+    Navigator.pop(context);
+  }
+
   Future<bool> konfirmasiOrderPressed(
-    BuildContext context,
-    CartDialog cartDialog,
-  ) async {
-    if (debounce == null || !debounce!.isActive) {
-      bool isAgree = await cartDialog.confirmOrderAlertDialog(context);
-      if (isAgree) {
-        if (context.mounted) {
-          cartDialog.loadingAlertDialog(context);
-        }
-
-        ProcessOrderService service = ProcessOrderService();
-        ProcessOrderRequest request = ProcessOrderRequest(
-          orderDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-          userCode: userCode,
-        );
-
-        // Simulate a network delay
-        // await Future.delayed(const Duration(seconds: 2));
-
-        try {
-          ProcessOrderResponse response = await service.processOrder(request);
-
-          if (response.status) {
-            if (context.mounted) {
-              Navigator.of(context).pop();
-              cartDialog.successAlertDialog(context);
-              return true;
-            }
-            return true;
-          } else {
-            if (context.mounted) {
-              Navigator.of(context).pop();
-              cartDialog.failureAlertDialog(
-                  context,
-                  'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
-                  response.message);
-              return true;
-            }
+      BuildContext context, CartDialog cartDialog, StateSetter setState) async {
+    if (totalCartPrice < 200000) {
+      cartDialog.failureAlertDialog(
+        context,
+        'Total keranjang belanja minimal Rp200.000',
+        '',
+      );
+    } else if (paymentMethodUIController.text == '') {
+      cartDialog.failureAlertDialog(
+        context,
+        'Pilih jenis pembayaran terlebih dahulu',
+        '',
+      );
+    } else {
+      if (debounce == null || !debounce!.isActive) {
+        bool isAgree = await cartDialog.confirmOrderAlertDialog(context);
+        if (isAgree) {
+          if (context.mounted) {
+            cartDialog.loadingAlertDialog(context);
           }
-        } catch (e) {
-          if (kDebugMode) {
-            print('Error: $e');
+
+          ProcessOrderService service = ProcessOrderService();
+          ProcessOrderRequest request = ProcessOrderRequest(
+            orderDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            userCode: userCode,
+            paymentMethod: paymentMethodUIController.text
+          );
+
+          // Simulate a network delay
+          // await Future.delayed(const Duration(seconds: 2));
+
+          try {
+            ProcessOrderResponse response = await service.processOrder(request);
+
+            if (response.status) {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                cartDialog.successAlertDialog(context);
+                return true;
+              }
+              return true;
+            } else {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                cartDialog.failureAlertDialog(
+                    context,
+                    'Terjadi kesalahan teknis, silahkan coba beberapa saat lagi.',
+                    response.message);
+                return true;
+              }
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              print('Error: $e');
+            }
+            return false;
           }
-          return false;
         }
       }
     }

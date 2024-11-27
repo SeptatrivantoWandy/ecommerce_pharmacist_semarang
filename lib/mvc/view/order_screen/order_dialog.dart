@@ -11,7 +11,7 @@ class OrderDialog {
       builder: (BuildContext context) {
         return SuccessDialog(
           successDialogText: successText,
-          isPopAgain: true,
+          isSuccessFromCartPage: false,
         );
       },
     );

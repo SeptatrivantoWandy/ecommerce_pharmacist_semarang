@@ -60,7 +60,8 @@ class LoginController {
       if (response.status) {
         if (await prefs.setString('username', response.username) &&
             await prefs.setString('userId', response.userId) &&
-            await prefs.setString('userCode', response.userCode)) {
+            await prefs.setString('userCode', response.userCode) &&
+            await prefs.setString('isSales', response.isSales)) {
           if (context.mounted) {
             Navigator.of(context).pop();
             Navigator.of(context).pushReplacement(

@@ -184,12 +184,11 @@ class _MenuViewState extends State<MainMenuView> {
                   errorBuilder: (BuildContext context, Object error,
                       StackTrace? stackTrace) {
                     return Container(
+                      padding: PaddingMarginManager.allSuperView,
                       color: ColorManager.greyPrimaryBackground,
-                      child: const Center(
-                        child: Icon(
-                          Icons.broken_image_outlined,
-                          size: 300,
-                          color: ColorManager.disabledBackground,
+                      child: Center(
+                        child: Image.asset(
+                          'assets/semesta_megah_sentosa_icon.png',
                         ),
                       ),
                     );
@@ -232,7 +231,9 @@ class _MenuViewState extends State<MainMenuView> {
                     return InkWell(
                       onTap: () {
                         mainMenuController.carouselSliderController
-                            .animateToPage(entry.key, duration: const Duration(milliseconds: 800), curve: Curves.fastEaseInToSlowEaseOut);
+                            .animateToPage(entry.key,
+                                duration: const Duration(milliseconds: 800),
+                                curve: Curves.fastEaseInToSlowEaseOut);
                       },
                       child: Container(
                         width: 8.0,
