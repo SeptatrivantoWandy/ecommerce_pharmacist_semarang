@@ -36,6 +36,7 @@ class EditOrderRequest {
 
 class EditedCartData {
   final String drugCode;
+  final String customerCode;
   final String drugMeasure;
   final int drugQty;
   final int bonus;
@@ -45,6 +46,7 @@ class EditedCartData {
 
   EditedCartData({
     required this.drugCode,
+    required this.customerCode,
     required this.drugMeasure,
     required this.drugQty,
     required this.bonus,
@@ -56,6 +58,7 @@ class EditedCartData {
   Map<String, dynamic> toJson() {
     return {
       'drugCode': drugCode,
+      'customerCode': customerCode,
       'drugMeasure': drugMeasure,
       'drugQty': drugQty,
       'bonus': bonus,

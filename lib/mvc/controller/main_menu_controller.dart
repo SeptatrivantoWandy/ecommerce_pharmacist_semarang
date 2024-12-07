@@ -13,6 +13,7 @@ class MainMenuController {
   final List<String> imgList = [];
 
   String? username;
+  String? name;
   String? userId;
   String? userCode;
   String? isSales;
@@ -33,6 +34,7 @@ class MainMenuController {
   Future<void> loadUserData() async {
     final SharedPreferences prefs = await futurePrefs;
     username = prefs.getString('username');
+    name = prefs.getString('name');
     userId = prefs.getString('userId');
     userCode = prefs.getString('userCode');
     isSales = prefs.getString('isSales');
@@ -62,7 +64,9 @@ class MainMenuController {
     } else {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => OrderView(customerName: username ?? 'Unknown'),
+          builder: (ctx) => OrderView(
+            customerName: name ?? 'Unknown',
+          ),
         ),
       );
     }

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/deletecartitem/delete_cart_item_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/deletecartitem/delete_cart_item_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/processorder/process_order_request.dart';
@@ -15,10 +17,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CartController {
   final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
   String userCode = '';
+  String customerCode = '';
   List<CartData> cartDataList = [];
   List<EditedCartData> editedCartDataList = [];
   String cartError = '';
   String editCartError = '';
+  String deleteCartError = '';
   double totalCartPrice = 0.0;
   String totalCartValue = '';
 
@@ -37,7 +41,12 @@ class CartController {
 
   Future<void> loadUserData() async {
     final SharedPreferences prefs = await futurePrefs;
-    userCode = prefs.getString('userCode')!;
+    userCode = prefs.getString('userCode') ?? '';
+    customerCode = prefs.getString('customerCode') ?? '';
+
+    if (customerCode.isEmpty) {
+      customerCode = userCode;
+    }
   }
 
   Future<bool> viewDidLoad() async {
@@ -83,7 +92,7 @@ class CartController {
     CartService cartService = CartService();
 
     // Fetch the CartResponse from the service
-    CartResponse? response = await cartService.getCart(userCode);
+    CartResponse? response = await cartService.getCart(userCode, customerCode);
 
     // Simulate empty list
     // CartResponse response = CartResponse(
@@ -107,6 +116,7 @@ class CartController {
       isEditSuccess = 'isSuccess';
       cartError = '';
 
+      // response.printCartResponse();
 
       // Initialize a list to store formatted CartData
       List<CartData> formattedCartDataList = [];
@@ -117,13 +127,11 @@ class CartController {
       for (var cartItem in response.cartData) {
         // Format the cart price and calculate the total
 
-
         double cartPriceValue = calculateDrugPriceTotal(
           double.parse(cartItem.cartDrugPrice),
           int.parse(cartItem.cartQty),
           double.parse(cartItem.cartDiscount),
         );
-
 
         totalCartPrice += cartPriceValue;
 
@@ -156,6 +164,7 @@ class CartController {
       for (var cartItem in cartDataList) {
         EditedCartData initiatedCartData = EditedCartData(
           drugCode: cartItem.drugData.drugCode,
+          customerCode: customerCode,
           drugMeasure: cartItem.cartMeasure,
           drugQty: int.parse(cartItem.cartQty),
           bonus: int.parse(cartItem.cartBonus),
@@ -179,7 +188,7 @@ class CartController {
     }
   }
 
-  Future<void> deleteItemPressed(
+  Future<void> deleteItemPressed2(
     BuildContext context,
     CartData deleteCartData,
     CartDialog cartDialog,
@@ -200,6 +209,7 @@ class CartController {
           if (!isSuccess) {
             EditedCartData undoEditedDelete = EditedCartData(
               drugCode: deleteCartData.drugData.drugCode,
+              customerCode: customerCode,
               drugMeasure: deleteCartData.cartMeasure,
               drugQty: int.parse(deleteCartData.cartQty),
               bonus: int.parse(deleteCartData.cartBonus),
@@ -213,6 +223,64 @@ class CartController {
             );
             editedCartDataList.insert(index, undoEditedDelete);
 
+            CartData undoDelete = CartData(
+              userCode: userCode,
+              cartMeasure: deleteCartData.cartMeasure,
+              cartQty: deleteCartData.cartQty,
+              cartBonus: deleteCartData.cartBonus,
+              cartDrugPrice: deleteCartData.cartDrugPrice,
+              cartDiscount: deleteCartData.cartDiscount,
+              drugData: deleteCartData.drugData,
+            );
+            cartDataList.insert(index, undoDelete);
+            setState(() {});
+          } else {
+            refreshData();
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> deleteItemPressed(
+    BuildContext context,
+    String drugCode,
+    CartDialog cartDialog,
+    VoidCallback refreshData,
+    StateSetter setState,
+    int index,
+    CartData deleteCartData,
+  ) async {
+    if (debounce == null || !debounce!.isActive) {
+      final bool isAgree =
+          await cartDialog.confirmDeleteItemAlertDialog(context);
+      if (isAgree) {
+        editedCartDataList.removeAt(index);
+        cartDataList.removeAt(index);
+        if (context.mounted) {
+          final bool isSuccess = await deleteOrder(
+            context,
+            cartDialog,
+            userCode,
+            drugCode,
+            customerCode,
+          );
+          if (!isSuccess) {
+            EditedCartData undoEditedDelete = EditedCartData(
+              drugCode: deleteCartData.drugData.drugCode,
+              customerCode: customerCode,
+              drugMeasure: deleteCartData.cartMeasure,
+              drugQty: int.parse(deleteCartData.cartQty),
+              bonus: int.parse(deleteCartData.cartBonus),
+              drugPrice: double.parse(deleteCartData.cartDrugPrice),
+              discount: double.parse(deleteCartData.cartDiscount),
+              drugPriceTotal: calculateDrugPriceTotal(
+                double.parse(deleteCartData.cartDrugPrice),
+                int.parse(deleteCartData.cartQty),
+                double.parse(deleteCartData.cartDiscount),
+              ),
+            );
+            editedCartDataList.insert(index, undoEditedDelete);
             CartData undoDelete = CartData(
               userCode: userCode,
               cartMeasure: deleteCartData.cartMeasure,
@@ -313,6 +381,66 @@ class CartController {
     }
   }
 
+  Future<bool> deleteOrder(
+    BuildContext context,
+    CartDialog cartDialog,
+    String deletingUsercode,
+    String deletingDrugCode,
+    String deletingCustomerCode,
+  ) async {
+    cartDialog.loadingAlertDialog(context);
+    deleteCartError = '';
+
+    DeleteCartItemService service = DeleteCartItemService();
+    DeleteCartItemRequest request = DeleteCartItemRequest(
+      userCode: deletingUsercode,
+      drugCode: deletingDrugCode,
+      customerCode: deletingCustomerCode,
+    );
+
+    try {
+      DeleteCartItemResponse response = await service.deleteCartItem(request);
+
+      if (response.status) {
+        isEditSuccess = 'isSuccess';
+
+        try {
+          bool isSuccessRefresh = await viewDidLoad();
+          if (isSuccessRefresh && context.mounted) {
+            Navigator.of(context).pop();
+            // setState(() {});
+            return isSuccessRefresh;
+          } else {
+            return false;
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print('error');
+          }
+          return false;
+        }
+      } else {
+        isEditSuccess = 'isFailure';
+        deleteCartError = response.message;
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          cartDialog.failureAlertDialog(
+            context,
+            'Gagal melakukan hapus cart',
+            deleteCartError,
+          );
+        }
+        // setState(() {});
+        return response.status;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+      return false;
+    }
+  }
+
   void paymentMethodModalPressed(BuildContext context, int index) {
     paymentMethodUIController.text = paymentMethodItems[index];
     Navigator.pop(context);
@@ -342,10 +470,10 @@ class CartController {
 
           ProcessOrderService service = ProcessOrderService();
           ProcessOrderRequest request = ProcessOrderRequest(
-            orderDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-            userCode: userCode,
-            paymentMethod: paymentMethodUIController.text
-          );
+              orderDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              userCode: userCode,
+              customerCode: customerCode,
+              paymentMethod: paymentMethodUIController.text);
 
           // Simulate a network delay
           // await Future.delayed(const Duration(seconds: 2));
@@ -354,9 +482,14 @@ class CartController {
             ProcessOrderResponse response = await service.processOrder(request);
 
             if (response.status) {
-              if (context.mounted) {
-                Navigator.of(context).pop();
-                cartDialog.successAlertDialog(context);
+              final prefs = await SharedPreferences.getInstance();
+              bool success = await prefs.remove('customerCode');
+              if (success) {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  cartDialog.successAlertDialog(context);
+                  return true;
+                }
                 return true;
               }
               return true;

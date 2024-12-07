@@ -59,6 +59,7 @@ class LoginController {
       MlgnResponse response = await service.login(request);
       if (response.status) {
         if (await prefs.setString('username', response.username) &&
+            await prefs.setString('name', response.name) &&
             await prefs.setString('userId', response.userId) &&
             await prefs.setString('userCode', response.userCode) &&
             await prefs.setString('isSales', response.isSales)) {
@@ -83,7 +84,8 @@ class LoginController {
       }
       if (context.mounted) {
         Navigator.of(context).pop();
-        loginDialog.failureAlertDialog(context, 'An unexpected error occurred.');
+        loginDialog.failureAlertDialog(
+            context, 'An unexpected error occurred.');
       }
     }
   }

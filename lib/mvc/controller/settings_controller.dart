@@ -10,6 +10,7 @@ class SettingsController {
   final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
 
   String? username;
+  String? name;
   String? userId;
   String? userCode;
   String? isSales;
@@ -35,6 +36,7 @@ class SettingsController {
   Future<void> loadUserData() async {
     final SharedPreferences prefs = await futurePrefs;
     username = prefs.getString('username');
+    name = prefs.getString('name');
     userId = prefs.getString('userId');
     userCode = prefs.getString('userCode');
     isSales = prefs.getString('isSales');

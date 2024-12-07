@@ -99,6 +99,19 @@ class _SetttingViewState extends State<SetttingView> {
                       ),
                     ),
                     Text(
+                      settingsController.name ?? '-',
+                      style: const TextStyle(
+                          fontSize: FontSizeManager.headlineBody),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'User Name',
+                      style: TextStyle(
+                        fontSize: FontSizeManager.subheadFootnote,
+                        color: ColorManager.subheadFootnote,
+                      ),
+                    ),
+                    Text(
                       settingsController.username ?? '-',
                       style: const TextStyle(
                           fontSize: FontSizeManager.headlineBody),

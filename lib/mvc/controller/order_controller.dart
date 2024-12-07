@@ -13,7 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderController {
   final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
-  String? userCode;
+  String userCode = '';
+  String customerCode = '';
 
   bool isNotEmptySearch = false;
   TextEditingController searchMedicineUIController = TextEditingController();
@@ -51,7 +52,12 @@ class OrderController {
 
   Future<void> loadUserData() async {
     final SharedPreferences prefs = await futurePrefs;
-    userCode = prefs.getString('userCode');
+    userCode = prefs.getString('userCode') ?? '';
+    customerCode = prefs.getString('customerCode') ?? '';
+
+    if (customerCode.isEmpty) {
+      customerCode = userCode;
+    }
   }
 
   Future<void> viewDidLoad(CartController cartController) async {
@@ -316,7 +322,8 @@ class OrderController {
     priceFormula();
     AddToCartService service = AddToCartService();
     AddToCartRequest request = AddToCartRequest(
-      userCode: userCode!,
+      userCode: userCode,
+      customerCode: customerCode,
       drugCode: drugCode,
       drugMeasure: drugMeasure,
       drugQty: quantityMedicine.round(),

@@ -107,6 +107,7 @@ class _QuantityButtonState extends State<QuantityButton> {
     if (widget.cartController.debounce == null) {
       EditedCartData newEditedCartData = EditedCartData(
         drugCode: drugCode,
+        customerCode: widget.cartController.customerCode,
         drugMeasure: drugMeasure,
         drugQty: quantityMedicine.round(),
         bonus: finalBonus,
@@ -206,6 +207,7 @@ class _QuantityButtonState extends State<QuantityButton> {
 
     EditedCartData newEditedCartData = EditedCartData(
       drugCode: drugCode,
+      customerCode: widget.cartController.customerCode,
       drugMeasure: drugMeasure,
       drugQty: quantityMedicine.round(),
       bonus: finalBonus,
@@ -244,6 +246,7 @@ class _QuantityButtonState extends State<QuantityButton> {
 
     EditedCartData newEditedCartData = EditedCartData(
       drugCode: drugCode,
+      customerCode: widget.cartController.customerCode,
       drugMeasure: drugMeasure,
       drugQty: quantityMedicine.round(),
       bonus: finalBonus,
@@ -289,11 +292,12 @@ class _QuantityButtonState extends State<QuantityButton> {
             ? () async {
                 await widget.cartController.deleteItemPressed(
                   context,
-                  cartData,
+                  cartData.drugData.drugCode,
                   widget.cartDialog,
-                  index,
                   widget.refreshData,
                   widget.setState,
+                  index,
+                  cartData
                 );
               }
             : null,
