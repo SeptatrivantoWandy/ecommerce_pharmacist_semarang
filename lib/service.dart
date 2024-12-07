@@ -7,6 +7,8 @@ import 'package:ecommerce_pharmacist_semarang/mvc/model/cart/cart_response.dart'
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/claimpoint/claim_point_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/customer/customer_response.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/deletecartitem/delete_cart_item_request.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/model/deletecartitem/delete_cart_item_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_request.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/editorder/edit_order_response.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/model/edituser/edit_user_request.dart';
@@ -82,6 +84,7 @@ class MlgnService {
           status: false,
           message: errorMessage,
           userId: '',
+          name: '',
           username: '',
           userCode: '',
           isSales: ''
@@ -96,6 +99,7 @@ class MlgnService {
         status: false,
         message: 'An unexpected error occurred.',
         userId: '',
+        name: '',
         username: '',
         userCode: '',
         isSales: ''
@@ -348,8 +352,8 @@ class AddToCartService {
 }
 
 class CartService {
-  Future<CartResponse?> getCart(String userCode) async {
-    final url = Uri.parse('$baseUrl/getCart.php?userCode=$userCode');
+  Future<CartResponse?> getCart(String userCode, String customerCode) async {
+    final url = Uri.parse('$baseUrl/getCart.php?userCode=$userCode&customerCode=$customerCode');
 
     try {
       final response = await http.get(url).timeout(const Duration(seconds: 4));
@@ -417,6 +421,42 @@ class EditOrderService {
   }
 }
 
+class DeleteCartItemService {
+  Future<DeleteCartItemResponse> deleteCartItem(DeleteCartItemRequest request) async {
+    final url = Uri.parse('$baseUrl/deleteOrder.php');
+
+    try {
+      final response = await http
+          .delete(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(const Duration(seconds: 4));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return DeleteCartItemResponse.fromJson(jsonResponse);
+      } else {
+        String errorMessage =
+            '${response.statusCode} ${HttpStatusError.getErrorMessage(response.statusCode)}';
+        return DeleteCartItemResponse(
+          status: false,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
+      return DeleteCartItemResponse(
+        status: false,
+        message: 'An unexpected error occurred.',
+      );
+    }
+  }
+}
+
 class ProcessOrderService {
   Future<ProcessOrderResponse> processOrder(ProcessOrderRequest request) async {
     final url = Uri.parse('$baseUrl/processOrder.php');
@@ -456,8 +496,8 @@ class ProcessOrderService {
 }
 
 class HistoryService {
-  Future<HistoryResponse?> getHistoryOrder(String userCode) async {
-    final url = Uri.parse('$baseUrl//getHistoryOrder.php?userCode=$userCode');
+  Future<HistoryResponse?> getHistoryOrder(String userCode, String customerCode) async {
+    final url = Uri.parse('$baseUrl//getHistoryOrder.php?userCode=$userCode&customerCode=$customerCode');
 
     try {
       final response = await http.get(url).timeout(const Duration(seconds: 4));

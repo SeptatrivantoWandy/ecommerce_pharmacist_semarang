@@ -62,7 +62,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
           child: TextField(
             style: const TextStyle(fontSize: FontSizeManager.headlineBody),
             controller: changePasswordController.usernameUIController,
-            readOnly: true,
             textAlignVertical: TextAlignVertical.center,
             decoration: const InputDecoration(
               hintText: "Masukkan username anda",

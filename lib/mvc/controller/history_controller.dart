@@ -6,13 +6,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HistoryController {
   final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
-  String? userCode;
+  String userCode = '';
+  String customerCode = '';
   List<HistoryData>? historyDataList;
   String? historyError;
 
   Future<void> loadUserData() async {
     final SharedPreferences prefs = await futurePrefs;
-    userCode = prefs.getString('userCode');
+    userCode = prefs.getString('userCode') ?? '';
+    customerCode = prefs.getString('customerCode') ?? '';
+
+    if (customerCode.isEmpty) {
+      customerCode = userCode;
+    }
   }
 
   Future<void> viewDidLoad() async {
@@ -20,7 +26,7 @@ class HistoryController {
     await loadUserData();
 
     // Then fetch History data after user data is loaded
-    if (userCode != null && userCode!.isNotEmpty) {
+    if (userCode.isNotEmpty) {
       await fetchHistory();
     } else {
       if (kDebugMode) {
@@ -62,7 +68,7 @@ class HistoryController {
     HistoryService historyService = HistoryService();
 
     // Call the service to fetch history history data
-    HistoryResponse? response = await historyService.getHistoryOrder(userCode!);
+    HistoryResponse? response = await historyService.getHistoryOrder(userCode, customerCode);
 
     // Simulate empty list
     // HistoryResponse response = HistoryResponse(

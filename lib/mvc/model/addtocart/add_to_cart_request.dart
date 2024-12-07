@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class AddToCartRequest {
   final String userCode;
+  final String customerCode;
   final String drugCode;
   final String drugMeasure;
   final int drugQty;
@@ -12,6 +13,7 @@ class AddToCartRequest {
 
   AddToCartRequest({
     required this.userCode,
+    required this.customerCode,
     required this.drugCode,
     required this.drugMeasure,
     required this.drugQty,
@@ -25,6 +27,7 @@ class AddToCartRequest {
   Map<String, dynamic> toJson() {
     return {
       'userCode': userCode,
+      'customerCode': customerCode,
       'drugCode': drugCode,
       'drugMeasure': drugMeasure,
       'drugQty': drugQty,
@@ -40,6 +43,7 @@ class AddToCartRequest {
     if (kDebugMode) {
       print('========== printAddToCartRequest ==========');
       print('User Code: $userCode');
+      print('Customer Code: $customerCode');
       print('Drug Code: $drugCode');
       print('Drug Measure: $drugMeasure');
       print('Drug Quantity: $drugQty');

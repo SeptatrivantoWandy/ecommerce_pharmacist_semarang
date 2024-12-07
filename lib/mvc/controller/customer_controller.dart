@@ -2,6 +2,7 @@ import 'package:ecommerce_pharmacist_semarang/mvc/model/customer/customer_respon
 import 'package:ecommerce_pharmacist_semarang/mvc/view/order_screen/order_view.dart';
 import 'package:ecommerce_pharmacist_semarang/service.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerController {
   String customerError = '';
@@ -10,6 +11,8 @@ class CustomerController {
   bool isNotEmptySearch = false;
   TextEditingController searchCustomerUIController = TextEditingController();
   List<CustomerData>? searchDataList;
+
+  final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
 
   Future<void> viewDidLoad() async {
     await fetchCustomer();
@@ -25,7 +28,9 @@ class CustomerController {
     // Filter allDrugDataList based on the query
     List<CustomerData> filteredList = customerDataList!.where((customerData) {
       // Assuming DrugData has a name property
-      return customerData.customerName.toLowerCase().contains(query.toLowerCase());
+      return customerData.customerName
+          .toLowerCase()
+          .contains(query.toLowerCase());
     }).toList();
 
     searchDataList = filteredList;
@@ -67,17 +72,28 @@ class CustomerController {
       } else {
         searchDataList = customerDataList;
       }
-
     } else {
       customerError = response?.message ?? 'Failed to fetch customer data';
     }
   }
 
-  void customerUIListItemPressed(BuildContext context, int index) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => OrderView(customerName: searchDataList?[index].customerName ?? 'Unknown'),
-      ),
+  Future<void> customerUIListItemPressed(
+    BuildContext context,
+    int index,
+  ) async {
+    final SharedPreferences prefs = await futurePrefs;
+    await prefs.setString(
+      'customerCode',
+      searchDataList?[index].customerCode ?? 'Unknown',
     );
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (ctx) => OrderView(
+            customerName: searchDataList?[index].customerName ?? 'Unknown',
+          ),
+        ),
+      );
+    }
   }
 }
