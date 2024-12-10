@@ -351,11 +351,19 @@ class CartController {
             setState(() {});
             return isSuccessRefresh;
           } else {
+            if (context.mounted) {
+              Navigator.of(context).pop();
+              return false;
+            }
             return false;
           }
         } catch (e) {
           if (kDebugMode) {
             print('error');
+          }
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            return false;
           }
           return false;
         }
@@ -376,6 +384,10 @@ class CartController {
     } catch (e) {
       if (kDebugMode) {
         print('Error: $e');
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        return false;
       }
       return false;
     }
@@ -408,14 +420,21 @@ class CartController {
           bool isSuccessRefresh = await viewDidLoad();
           if (isSuccessRefresh && context.mounted) {
             Navigator.of(context).pop();
-            // setState(() {});
             return isSuccessRefresh;
           } else {
+            if (context.mounted) {
+              Navigator.of(context).pop();
+              return false;
+            }
             return false;
           }
         } catch (e) {
           if (kDebugMode) {
             print('error');
+          }
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            return false;
           }
           return false;
         }
@@ -436,6 +455,10 @@ class CartController {
     } catch (e) {
       if (kDebugMode) {
         print('Error: $e');
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        return false;
       }
       return false;
     }
@@ -502,10 +525,15 @@ class CartController {
                     response.message);
                 return true;
               }
+              return true;
             }
           } catch (e) {
             if (kDebugMode) {
               print('Error: $e');
+            }
+            if (context.mounted) {
+              Navigator.of(context).pop();
+              return false;
             }
             return false;
           }

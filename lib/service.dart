@@ -72,7 +72,7 @@ class MlgnService {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(request.toJson()),
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -149,7 +149,7 @@ class MlgnBaruService {
 
     try {
       final response = await http.Response.fromStream(streamedResponse)
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -186,7 +186,7 @@ class EditUserService {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(request.toJson()),
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
           
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -217,7 +217,7 @@ class BannerService {
     final url = Uri.parse('$baseUrl/getBanner.php');
 
     try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         // Parse the JSON response
@@ -251,7 +251,7 @@ class CustomerService {
     final url = Uri.parse('$baseUrl/getCustomer.php');
 
     try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -282,7 +282,7 @@ class DrugService {
     final url = Uri.parse('$baseUrl/getDrug.php');
 
     try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         // Parse the JSON response
@@ -323,7 +323,7 @@ class AddToCartService {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(request.toJson()),
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -356,7 +356,7 @@ class CartService {
     final url = Uri.parse('$baseUrl/getCart.php?userCode=$userCode&customerCode=$customerCode');
 
     try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         // Parse the JSON response
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -395,7 +395,7 @@ class EditOrderService {
             body: jsonEncode(
                 request.toJson()), // Assuming request.toJson() is implemented
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -432,7 +432,7 @@ class DeleteCartItemService {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(request.toJson()),
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -469,7 +469,7 @@ class ProcessOrderService {
             body: jsonEncode(
                 request.toJson()), // Assuming request.toJson() is implemented
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -500,7 +500,7 @@ class HistoryService {
     final url = Uri.parse('$baseUrl//getHistoryOrder.php?userCode=$userCode&customerCode=$customerCode');
 
     try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         // Parse the JSON response
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -533,7 +533,7 @@ class PiutangService {
     final url = Uri.parse('$baseUrl/getPiutang.php?userCode=$userCode');
 
     try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -568,7 +568,7 @@ class PointService {
         '$baseUrl/getSaldoPoint.php?userCode=$userCode&startDate=$startDate&endDate=$endDate');
 
     try {
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         // Parse the JSON response
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -585,7 +585,6 @@ class PointService {
         );
       }
     } catch (e) {
-      print('object');
       if (kDebugMode) {
         print('An unexpected error occurred: $e');
       }
@@ -610,7 +609,7 @@ class ClaimPointService {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(request.toJson()),
           )
-          .timeout(const Duration(seconds: 4));
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
