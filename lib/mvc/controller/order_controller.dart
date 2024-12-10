@@ -156,7 +156,7 @@ class OrderController {
         searchDataList = orderDataList;
       }
     } else {
-      orderError = 'Failed to fetch drug data.';
+      orderError = 'Koneksi jaringan bermasalah.';
     }
   }
 

@@ -141,7 +141,7 @@ class HistoryController {
       historyDataList = formattedHistoryDataList;
     } else {
       historyError =
-          response?.message ?? 'Failed to fetch history history data';
+          response?.message ?? 'Failed to fetch history data';
     }
   }
 }
