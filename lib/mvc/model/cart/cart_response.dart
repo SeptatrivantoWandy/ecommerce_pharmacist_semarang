@@ -104,12 +104,14 @@ class CartData {
 class CartDetail {
   final String drugCode;
   final String drugName;
+  final String drugStock;
   final String drugImage;
   final DrugDetail drugDetail;
 
   CartDetail({
     required this.drugCode,
     required this.drugName,
+    required this.drugStock,
     required this.drugImage,
     required this.drugDetail,
   });
@@ -118,6 +120,7 @@ class CartDetail {
     return CartDetail(
       drugCode: json['drugCode'] ?? '',
       drugName: json['drugName'] ?? '',
+      drugStock: json['drugStock'] ?? '',
       drugImage: json['drugImage'] ?? '',
       drugDetail: DrugDetail.fromJson(json['drugDetail']),
     );
