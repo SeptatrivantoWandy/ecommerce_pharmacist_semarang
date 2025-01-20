@@ -32,6 +32,7 @@ class _QuantityButtonState extends State<QuantityButton> {
 
   late String drugCode;
   late String drugMeasure;
+  late int drugStock;
 
   late double quantityMedicine;
   late double priceMedicine;
@@ -71,6 +72,7 @@ class _QuantityButtonState extends State<QuantityButton> {
 
     drugCode = selectedCartData.drugData.drugCode;
     drugMeasure = selectedCartData.cartMeasure;
+    drugStock = double.parse(selectedCartData.drugData.drugStock).toInt();
 
     quantityMedicine = double.parse(selectedCartData.cartQty);
 
@@ -291,14 +293,13 @@ class _QuantityButtonState extends State<QuantityButton> {
                 !widget.cartController.debounce!.isActive
             ? () async {
                 await widget.cartController.deleteItemPressed(
-                  context,
-                  cartData.drugData.drugCode,
-                  widget.cartDialog,
-                  widget.refreshData,
-                  widget.setState,
-                  index,
-                  cartData
-                );
+                    context,
+                    cartData.drugData.drugCode,
+                    widget.cartDialog,
+                    widget.refreshData,
+                    widget.setState,
+                    index,
+                    cartData);
               }
             : null,
         icon: const Icon(
@@ -350,7 +351,9 @@ class _QuantityButtonState extends State<QuantityButton> {
           ),
           Container(
             decoration: BoxDecoration(
-              color: ColorManager.whitePrimaryBackground,
+              color: quantityMedicine >= drugStock
+                  ? ColorManager.disabledBackground
+                  : ColorManager.whitePrimaryBackground,
               borderRadius: BorderRadiusManager.textfieldRadius,
             ),
             height: 34,
@@ -358,9 +361,11 @@ class _QuantityButtonState extends State<QuantityButton> {
             child: IconButton(
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              onPressed: () {
-                incrementQuantity();
-              },
+              onPressed: quantityMedicine >= drugStock
+                  ? null
+                  : () {
+                      incrementQuantity();
+                    },
               icon: const Icon(Icons.add),
               color: ColorManager.primary,
             ),

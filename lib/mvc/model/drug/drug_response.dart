@@ -57,6 +57,7 @@ class DrugResponse {
         print('  Discount 3: ${drug.drugDetail.disc3}');
         print('  Final Price 3: ${drug.drugDetail.hrgJadi3}');
         print('  Condition 3: ${drug.drugDetail.kond3}');
+        print('  Expiry Date: ${drug.drugDetail.expiryDate}');
         print('======'); // Print a blank line between drugs for readability
       }
     }

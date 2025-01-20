@@ -23,6 +23,7 @@ class OrderController {
   int? cartLength;
   List<DrugData>? orderDataList;
   List<DrugData>? searchDataList;
+  List drugCodeList = [];
 
   double quantityMedicine = 1;
   late double priceMedicine;
@@ -87,12 +88,16 @@ class OrderController {
   }
 
   Future<void> getCartLength(CartController cartController) async {
+    drugCodeList.clear();
     await cartController.viewDidLoad();
 
     // Simulate a network delay
     // await Future.delayed(const Duration(seconds: 2));
 
     cartLength = cartController.cartDataList.length;
+    for (var cartDataList in cartController.cartDataList) {
+      drugCodeList.add(cartDataList.drugData.drugCode);
+    }
   }
 
   String formatBalance(String balance) {
@@ -319,43 +324,53 @@ class OrderController {
     String drugCode,
     OrderDialog orderDialog,
   ) async {
-    priceFormula();
-    AddToCartService service = AddToCartService();
-    AddToCartRequest request = AddToCartRequest(
-      userCode: userCode,
-      customerCode: customerCode,
-      drugCode: drugCode,
-      drugMeasure: drugMeasure,
-      drugQty: quantityMedicine.round(),
-      bonus: finalBonus,
-      drugPrice: priceMedicine,
-      drugPriceTotal: totalPriceMedicine,
-      discount: finalDisc,
-    );
-
-    // request.printAddToCartRequest();
-
-    // Simulate a network delay
-    // await Future.delayed(const Duration(seconds: 2));
-
-    try {
-      orderError = '';
-      AddToCartResponse response = await service.addToCart(request);
-
-      // response.printAddToCartResponse();
-
-      if (response.status) {
-        orderError = '';
-        return response.status;
-      } else {
-        orderError = response.message;
-        return response.status;
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
+    if (drugCodeList.contains(drugCode)) {
+      orderError =
+          'Item sudah ada di keranjang. Silakan edit jumlah item di halaman keranjang.';
       return false;
+    } else if (cartLength! >= 12) {
+      orderError =
+          'Keranjang penuh. Maksimal 12 item. Silakan hapus beberapa item keranjang terlebih dahulu.';
+      return false;
+    } else {
+      priceFormula();
+      AddToCartService service = AddToCartService();
+      AddToCartRequest request = AddToCartRequest(
+        userCode: userCode,
+        customerCode: customerCode,
+        drugCode: drugCode,
+        drugMeasure: drugMeasure,
+        drugQty: quantityMedicine.round(),
+        bonus: finalBonus,
+        drugPrice: priceMedicine,
+        drugPriceTotal: totalPriceMedicine,
+        discount: finalDisc,
+      );
+
+      // request.printAddToCartRequest();
+
+      // Simulate a network delay
+      // await Future.delayed(const Duration(seconds: 2));
+
+      try {
+        orderError = '';
+        AddToCartResponse response = await service.addToCart(request);
+
+        // response.printAddToCartResponse();
+
+        if (response.status) {
+          orderError = '';
+          return response.status;
+        } else {
+          orderError = response.message;
+          return response.status;
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error: $e');
+        }
+        return false;
+      }
     }
   }
 }
