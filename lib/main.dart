@@ -2,7 +2,7 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/auth_screen/auth_view.dar
 import 'package:flutter/material.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 
-// flutter build apk --build-name=0.3.3 --build-number=1
+// flutter build apk --build-name=0.4.0 --build-number=1
 // flutter clean && flutter packages get && flutter packages upgrade
 
 /* =============== Agenda =============== */

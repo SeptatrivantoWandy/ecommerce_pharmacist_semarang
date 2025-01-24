@@ -47,6 +47,12 @@ class LoginController {
     return false;
   }
 
+  Future<void> saveLastSessionDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    await prefs.setString('lastSessionDate', now.toIso8601String());
+  }
+
   Future<void> loginAccount(BuildContext context) async {
     final SharedPreferences prefs = await futurePrefs;
     MlgnService service = MlgnService();
@@ -63,6 +69,7 @@ class LoginController {
             await prefs.setString('userId', response.userId) &&
             await prefs.setString('userCode', response.userCode) &&
             await prefs.setString('isSales', response.isSales)) {
+          saveLastSessionDate();
           if (context.mounted) {
             Navigator.of(context).pop();
             Navigator.of(context).pushReplacement(

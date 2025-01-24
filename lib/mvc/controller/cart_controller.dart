@@ -188,60 +188,6 @@ class CartController {
     }
   }
 
-  Future<void> deleteItemPressed2(
-    BuildContext context,
-    CartData deleteCartData,
-    CartDialog cartDialog,
-    int index,
-    VoidCallback refreshData,
-    StateSetter setState,
-  ) async {
-    if (debounce == null || !debounce!.isActive) {
-      final bool isAgree =
-          await cartDialog.confirmDeleteItemAlertDialog(context);
-      if (isAgree) {
-        editedCartDataList.removeAt(index);
-        cartDataList.removeAt(index);
-
-        if (context.mounted) {
-          final bool isSuccess =
-              await editOrder(context, cartDialog, refreshData, setState);
-          if (!isSuccess) {
-            EditedCartData undoEditedDelete = EditedCartData(
-              drugCode: deleteCartData.drugData.drugCode,
-              customerCode: customerCode,
-              drugMeasure: deleteCartData.cartMeasure,
-              drugQty: int.parse(deleteCartData.cartQty),
-              bonus: int.parse(deleteCartData.cartBonus),
-              drugPrice: double.parse(deleteCartData.cartDrugPrice),
-              discount: double.parse(deleteCartData.cartDiscount),
-              drugPriceTotal: calculateDrugPriceTotal(
-                double.parse(deleteCartData.cartDrugPrice),
-                int.parse(deleteCartData.cartQty),
-                double.parse(deleteCartData.cartDiscount),
-              ),
-            );
-            editedCartDataList.insert(index, undoEditedDelete);
-
-            CartData undoDelete = CartData(
-              userCode: userCode,
-              cartMeasure: deleteCartData.cartMeasure,
-              cartQty: deleteCartData.cartQty,
-              cartBonus: deleteCartData.cartBonus,
-              cartDrugPrice: deleteCartData.cartDrugPrice,
-              cartDiscount: deleteCartData.cartDiscount,
-              drugData: deleteCartData.drugData,
-            );
-            cartDataList.insert(index, undoDelete);
-            setState(() {});
-          } else {
-            refreshData();
-          }
-        }
-      }
-    }
-  }
-
   Future<void> deleteItemPressed(
     BuildContext context,
     String drugCode,
