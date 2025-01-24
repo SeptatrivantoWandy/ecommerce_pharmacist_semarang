@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsController {
-  SettingsDialog mainMenuDialog = SettingsDialog();
+  SettingsDialog settingsDialog = SettingsDialog();
   final Future<SharedPreferences> futurePrefs = SharedPreferences.getInstance();
 
   String? username;
@@ -54,7 +54,7 @@ class SettingsController {
     final SharedPreferences prefs = await futurePrefs;
     bool success;
     if (context.mounted) {
-      mainMenuDialog.loadingAlertDialog(context);
+      settingsDialog.loadingAlertDialog(context);
     }
     success = await prefs.clear();
     if (success) {

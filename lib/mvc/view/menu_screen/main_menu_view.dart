@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/controller/main_menu_controller.dart';
+import 'package:ecommerce_pharmacist_semarang/mvc/view/menu_screen/main_menu_dialog.dart';
 import 'package:ecommerce_pharmacist_semarang/mvc/view/settings_screen/settting_view.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,12 @@ class MainMenuView extends StatefulWidget {
 
 class _MenuViewState extends State<MainMenuView> {
   final MainMenuController mainMenuController = MainMenuController();
+  final MainMenuDialog mainMenuDialog = MainMenuDialog();
 
   @override
   void initState() {
     super.initState();
-    mainMenuController.viewDidLoad(setState);
+    mainMenuController.viewDidLoad(setState, context, mainMenuDialog);
   }
 
   Widget logoUIImage() {
