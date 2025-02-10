@@ -21,9 +21,9 @@ class SettingsDialog {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return const ConfirmationDialog(
-            confirmDialogTitle: 'Logut Akun',
+            confirmDialogTitle: 'Logout Akun',
             confirmDialogText:
-                'Logut akun anda sekarang? Anda harus melakukan login kembali untuk menggunakan aplikasi ini setelah melakukan logout');
+                'Logout akun anda sekarang? Anda harus melakukan login kembali untuk menggunakan aplikasi ini setelah melakukan logout');
       },
     );
     if (action == true) {
