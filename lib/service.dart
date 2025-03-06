@@ -28,7 +28,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 
-const baseUrl = 'http://103.178.175.164/ecommercePharmacist';
+const baseUrlOld = 'http://103.178.175.164/ecommercePharmacist';
+const baseUrl = 'http://103.178.175.110/ecommercePharmacist';
 
 class HttpStatusError {
   static String getErrorMessage(int statusCode) {
