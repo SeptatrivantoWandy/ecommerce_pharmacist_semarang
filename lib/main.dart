@@ -2,7 +2,7 @@ import 'package:ecommerce_pharmacist_semarang/mvc/view/auth_screen/auth_view.dar
 import 'package:flutter/material.dart';
 import 'package:ecommerce_pharmacist_semarang/resource/resource_manager.dart';
 
-// flutter build apk --build-name=0.4.1 --build-number=2
+// flutter build apk --build-name=1.0.0 --build-number=1
 // flutter clean && flutter packages get && flutter packages upgrade
 
 /* =============== Agenda =============== */
@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: true,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
