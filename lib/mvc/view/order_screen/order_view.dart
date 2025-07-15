@@ -311,7 +311,7 @@ class _OrderViewState extends State<OrderView> {
                             ),
                             SizedBox(width: 4),
                             Text(
-                              'HNA',
+                              'HNA + PPN',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             )
                           ],
